@@ -1,0 +1,59 @@
+.footer {
+    background: #7b1111;
+    color: #ffffff;
+    /* padding: 2rem 0; */
+    margin-top: auto;
+    margin-bottom: 2rem;
+}
+
+.footer-container {
+    max-width: 960px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.footer-images {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.footer-images img {
+    /* height: 64px;
+    width: 84px; */
+    /* object-fit: contain; */
+      /* float: left;
+    width: 84px;
+    height: 64px !important;
+    padding-top: 13px;
+    text-align: center;
+    margin-left: -10px; */
+        margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.footer-copyright {
+    text-align: right;
+}
+
+.footer-copyright p {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+}
+
+.clf_footer_logo {
+    float: left;
+    width: 84px;
+    height: 64px;
+    padding-top: 13px;
+    text-align: center !important;
+    margin-left: -10px;
+}
