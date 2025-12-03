@@ -63,9 +63,10 @@
     position: relative;
 }
 
+/* Logo Styles */
 .logo {
     height: 6em;
-    padding: 0 !important;
+    padding: 0;
     will-change: filter;
     transition: filter 300ms;
     margin-left: 10px;
@@ -80,7 +81,6 @@
 }
 
 .logo img {
-    /* height: 50px; */
     width: auto;
 }
 
@@ -97,24 +97,24 @@
     font-weight: bold;
 }
 
+/* Navigation Links */
 .nav-links-desktop a,
 .nav-links a {
     color: #ffffff !important;
     text-shadow: none;
     margin-top: 20px;
-    font-size: 14px !important;
+    font-size: 14px;
     font-weight: 400;
     text-decoration: none;
     transition: all 0.3s ease;
     display: block;
     position: relative;
-    padding: 10px 10px;
+    padding: 10px;
 }
-
 
 .nav-links-desktop a:hover,
 .nav-links a:hover {
-    color: #ffffff;
+    color: #ffffff !important;
     font-weight: bold;
     letter-spacing: 0.5px;
 }

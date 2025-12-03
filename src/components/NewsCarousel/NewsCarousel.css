@@ -19,12 +19,12 @@
 }
 
 .post {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
-.post {
+/* .post {
     border-bottom: dotted 1px #ccc;
-}
+} */
 
 .group {
     zoom: 1;
@@ -72,7 +72,7 @@
 .post-intro h2 a {
     font-size: 16px;
     display: block;
-    padding: 0px;
+    padding: 0;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
     text-decoration: none;
     color: inherit;
@@ -199,11 +199,13 @@
     margin: 0 0 10px 0;
     font-family: "Abel", Arial, Helvetica, sans-serif;
 }
+/* Utility Classes */
 .pl-0 {
-    padding-left: 0px !important;
-} 
-.pr-0{
-    padding-right: 0px !important;
+    padding-left: 0;
+}
+
+.pr-0 {
+    padding-right: 0;
 }
 
 .news-description {

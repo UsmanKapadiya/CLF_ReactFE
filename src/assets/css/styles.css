@@ -1,42 +1,49 @@
+/* Global Styles */
 body {
     color: #333;
 }
 
 main {
-    padding-top: 0px !important;
+    padding-top: 0 !important;
 }
 
+
+
+/* Banner and Slider Styles */
 .slider {
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
     margin-left: 10px;
     margin-right: 10px;
 }
 
 .slides {
-    width: 100% !important;
+    width: 100%;
     display: block;
 }
 
+/* Post Styles */
 .post {
     padding-bottom: 20px;
     margin: 0 0 50px 0;
 }
 
+.static {
+    border-bottom: none;
+    margin-top: 2px;
+    margin-bottom: 10px;
+}
+
+/* Homepage Banner */
 .homepage_banner {
-    margin-bottom: 20px !important;
+    margin-bottom: 20px;
 }
 
 .welcomeText {
     font-size: 14px;
 }
 
-.static {
-    border-bottom: none !important;
-    margin-top: 2px;
-    margin-bottom: 10px !important;
-}
-
+/* News Section Background */
 .container-fluid.home_post_back {
     background: url(../banner_mid.jpg);
     padding: 50px 0;
@@ -44,8 +51,6 @@ main {
     margin-left: calc(-50vw + 50%);
     margin-right: calc(-50vw + 50%);
     width: 100vw;
-    /* max-width: 100%; */
-    /* overflow: hidden; */
 }
 
 .container-fluid.home_post_back p {
@@ -71,8 +76,6 @@ main {
 
 .column {
     background: #fff;
-    /* padding: 20px; */
-    /* border: 1px solid #ddd; */
 }
 
 .location-heading {
@@ -98,17 +101,20 @@ main {
     margin-bottom: 10px;
     line-height: 30px;
     font-family: 'Lato', sans-serif;
-    margin-top: 0px !important;
+    margin-top: 0;
 }
 
+/* Widget Styles */
 .widget-p-bottom {
-    margin-bottom: 5px
+    margin-bottom: 5px;
 }
 
 .widget-text {
     font-size: 14px;
     font-family: "Abel", Arial, Helvetica, sans-serif;
 }
+
+/* Schedule Styles */
 .check_schedule {
     font-weight: 700;
     color: #7b1111;
@@ -118,9 +124,9 @@ main {
 
 .arrow-icon {
     margin-left: 5px;
-    font-size: 19px !important;
+    font-size: 19px;
     vertical-align: middle;
-    font-weight: bold !important;
+    font-weight: bold;
 }
 
 .schedule-expand {
@@ -136,7 +142,6 @@ main {
     font-size: 14px;
     font-family: "Abel", Arial, Helvetica, sans-serif;
     margin-bottom: 15px;
-    
 }
 
 .schedule-expand .textwidget p {
@@ -146,17 +151,24 @@ main {
 
 
 
+/* Utility Classes */
+.upperCaseText {
+    text-transform: uppercase;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.mt-1 {
+    margin-top: 0.5rem;
+}
+
+/* Responsive Styles */
 @media (max-width: 960px) {
     .three-column-grid {
         grid-template-columns: 1fr;
     }
-}
-
-.upperCaseText{
-    text-transform: uppercase;
-}
-.cursor-pointer {
-    cursor: pointer;
 }
 
 p {

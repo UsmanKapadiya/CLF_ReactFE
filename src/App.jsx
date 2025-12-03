@@ -3,7 +3,6 @@ import './App.css'
 import Header from './components/Header/Header'
 import Footer from './components/Footer/Footer'
 import Home from './pages/Home/Home'
-import "../src/assets/css/styles.css"
 
 
 function App() {

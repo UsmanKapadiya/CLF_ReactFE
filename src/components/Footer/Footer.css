@@ -1,7 +1,7 @@
+/* Footer Styles */
 .footer {
     background: #7b1111;
     color: #ffffff;
-    /* padding: 2rem 0; */
     margin-top: auto;
     margin-bottom: 2rem;
 }
@@ -16,6 +16,7 @@
     padding: 0 2rem;
 }
 
+/* Footer Images */
 .footer-images {
     display: flex;
     gap: 1rem;
@@ -23,20 +24,21 @@
 }
 
 .footer-images img {
-    /* height: 64px;
-    width: 84px; */
-    /* object-fit: contain; */
-      /* float: left;
-    width: 84px;
-    height: 64px !important;
-    padding-top: 13px;
-    text-align: center;
-    margin-left: -10px; */
-        margin: 0;
+    margin: 0;
     padding: 0;
     border: 0;
 }
 
+.clf_footer_logo {
+    float: left;
+    width: 84px;
+    height: 64px;
+    padding-top: 13px;
+    text-align: center;
+    margin-left: -10px;
+}
+
+/* Footer Copyright */
 .footer-copyright {
     text-align: right;
 }
@@ -47,13 +49,4 @@
     font-size: inherit;
     font-weight: inherit;
     line-height: inherit;
-}
-
-.clf_footer_logo {
-    float: left;
-    width: 84px;
-    height: 64px;
-    padding-top: 13px;
-    text-align: center !important;
-    margin-left: -10px;
 }
