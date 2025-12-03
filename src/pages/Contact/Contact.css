@@ -197,12 +197,13 @@
 @media (max-width: 960px) {
     .contact-boxes {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 40px;
         padding: 0 10px;
     }
 
     .contact-box {
         width: 100%;
+        margin-bottom: 20px;
     }
 }
 
@@ -272,7 +273,8 @@
     }
 
     .submit-btn {
-        width: 100%;
+        display: block;
+        width: auto;
         padding: 0.875rem;
     }
 }
