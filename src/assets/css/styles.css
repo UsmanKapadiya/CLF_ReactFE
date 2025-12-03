@@ -4,7 +4,7 @@ body {
 }
 
 main {
-    padding-top: 0 !important;
+    padding-top: 0px !important;
 }
 
 
@@ -166,6 +166,9 @@ main {
 
 /* Responsive Styles */
 @media (max-width: 960px) {
+     main {
+        padding-top: 55px !important;
+    }
     .three-column-grid {
         grid-template-columns: 1fr;
     }
@@ -177,4 +180,17 @@ p {
 
 p {
     font-family: "Abel", Arial, Helvetica, sans-serif;
+}
+
+@media (max-width: 600px) {
+    main {
+        padding-top: 55px !important;
+    }
+
+    .homepage_banner img {
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+        display: block;
+    }
 }
