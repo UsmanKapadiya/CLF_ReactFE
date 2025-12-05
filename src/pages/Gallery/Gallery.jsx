@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import './Gallery.css';
 import Title from '../../assets/title.png';
-import videoThumbnail from '../../assets/videoThumbnail.png';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import { GALLERY_CATEGORIES, galleryVideos, galleryPhotos } from '../../constants/galleryData';
 
-// Gallery Videos Data
+/* Removed embedded data - now imported from constants/galleryData.js 
 const galleryVideos = [
     {
         id: 1,
@@ -285,63 +285,56 @@ const galleryPhotos = {
             photos: [
                 { id: 46, src: '/images/2006/photo1.jpg', alt: 'Training 2006', thumbnail: '/images/2006/thumb1.jpg', title: 'Training Session' },
                 { id: 47, src: '/images/2006/photo2.jpg', alt: 'Competition 2006', thumbnail: '/images/2006/thumb2.jpg', title: 'Competition Event' },
-            ]
-        }
-    ],
-};
-
-const MAIN_CATEGORIES = ['photos', 'videos'];
+*/
 
 function Gallery() {
-    const navigate = useNavigate();
     const location = useLocation();
-    const years = Object.keys(galleryPhotos).sort((a, b) => b - a);
-    const currentYear = new Date().getFullYear().toString();
-    const defaultYear = years.includes(currentYear) ? currentYear : years[0];
+    
+    // Memoize computed values
+    const years = useMemo(() => Object.keys(galleryPhotos).sort((a, b) => b - a), []);
+    const defaultYear = useMemo(() => {
+        const currentYear = new Date().getFullYear().toString();
+        return years.includes(currentYear) ? currentYear : years[0];
+    }, [years]);
 
     // Determine initial category from URL
-    const getCategoryFromPath = () => {
+    const getCategoryFromPath = useCallback(() => {
         if (location.pathname.includes('/videos')) return 'videos';
         if (location.pathname.includes('/photos')) return 'photos';
-        return null; // No category selected for /gallery/
-    };
+        return null;
+    }, [location.pathname]);
 
-    const [mainCategory, setMainCategory] = useState(getCategoryFromPath());
+    const [mainCategory, setMainCategory] = useState(getCategoryFromPath);
     const [selectedYear, setSelectedYear] = useState(defaultYear);
     const [selectedCatalog, setSelectedCatalog] = useState(null);
     const [showAllGalleries, setShowAllGalleries] = useState(false);
     const [lightboxImage, setLightboxImage] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [playingVideo, setPlayingVideo] = useState(null);
     const [videoLightbox, setVideoLightbox] = useState(null);
+    const [loading, setLoading] = useState(false);
+
 
     // Sync state with URL changes
     useEffect(() => {
         const category = getCategoryFromPath();
         setMainCategory(category);
-        // When photos is selected, set to latest year
         if (category === 'photos') {
-            setSelectedYear(years[0]); // years is already sorted descending, so [0] is the latest
+            setSelectedYear(years[0]);
             setShowAllGalleries(false);
         }
-    }, [location.pathname]);
+    }, [location.pathname, getCategoryFromPath, years]);
 
-    // Helper function to get total photo count for a year
-    const getYearPhotoCount = (year) => {
-        const yearData = galleryPhotos[year];
-        return yearData.reduce((total, catalog) => total + catalog.photos.length, 0);
-    };
-
-    const openLightbox = (image, index) => {
+    // Event handlers - memoized for performance
+    const openLightbox = useCallback((image, index) => {
         setLightboxImage(image);
         setCurrentImageIndex(index);
-    };
+    }, []);
 
-    const closeLightbox = () => {
+    const closeLightbox = useCallback(() => {
         setLightboxImage(null);
-    };
+    }, []);
 
-    const navigateLightbox = (direction) => {
+    const navigateLightbox = useCallback((direction) => {
         if (!selectedYear || !selectedCatalog) return;
 
         const yearData = galleryPhotos[selectedYear];
@@ -355,9 +348,9 @@ function Gallery() {
 
         setCurrentImageIndex(newIndex);
         setLightboxImage(yearPhotos[newIndex]);
-    };
+    }, [selectedYear, selectedCatalog, currentImageIndex]);
 
-    const handleKeyDown = (e) => {
+    const handleKeyDown = useCallback((e) => {
         if (e.key === 'Escape') {
             closeLightbox();
         } else if (e.key === 'ArrowRight') {
@@ -365,32 +358,32 @@ function Gallery() {
         } else if (e.key === 'ArrowLeft') {
             navigateLightbox('prev');
         }
-    };
+    }, [closeLightbox, navigateLightbox]);
 
-    const handleYearClick = (year) => {
+    const handleYearClick = useCallback((year) => {
         setSelectedYear(year);
         setSelectedCatalog(null);
         setShowAllGalleries(false);
-    };
+    }, []);
 
-    const handleAllGalleriesClick = () => {
+    const handleAllGalleriesClick = useCallback(() => {
         setShowAllGalleries(true);
         setSelectedYear(null);
         setSelectedCatalog(null);
-    };
+    }, []);
 
-    const handleCatalogClick = (catalogTitle) => {
+    const handleCatalogClick = useCallback((catalogTitle) => {
         setSelectedCatalog(catalogTitle);
-        setMainCategory(null); // Clear sidebar selection when catalog is opened
-    };
+        setMainCategory(null);
+    }, []);
 
-    const handleVideoPlay = (video) => {
+    const handleVideoPlay = useCallback((video) => {
         setVideoLightbox(video);
-    };
+    }, []);
 
-    const closeVideoLightbox = () => {
+    const closeVideoLightbox = useCallback(() => {
         setVideoLightbox(null);
-    };
+    }, []);
 
     return (
         <div className="gallery-page">
@@ -402,7 +395,7 @@ function Gallery() {
                 {/* Sidebar Category Filters */}
                 <div className="gallery-sidebar mb-0">
                     <ul className="sidebar-filters mb-0">
-                        {MAIN_CATEGORIES.map(category => (
+                        {GALLERY_CATEGORIES.map(category => (
                             <li
                                 key={category}
                                 className={`sidebar-filter-btn ${mainCategory === category ? 'active' : ''}`}
