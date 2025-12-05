@@ -900,7 +900,7 @@
     }
 
     .gallery-main-content {
-        width: 100%;
+        /* width: 100%; */
         max-width: 100%;
         min-width: 0;
         margin-left: 20px;
@@ -915,6 +915,41 @@
     .videos-grid {
         grid-template-columns: repeat(3, 1fr);
         width: 100%;
+        max-width: 100%;
+        gap: 0;
+        box-sizing: border-box;
+    }
+
+    .video-item {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .video-thumbnail {
+        width: 100%;
+        max-width: 220px;
+        height: auto;
+        aspect-ratio: 16 / 9;
+    }
+
+    .featured-video-thumbnail {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+    }
+
+    .featured-video {
+        margin-bottom: 30px;
+    }
+
+    .featured-video-info {
+        padding: 0 0 20px 0;
+    }
+
+    .video-info {
+        padding: 15px;
     }
 }
 
@@ -960,8 +995,8 @@
     }
 
     .videos-grid {
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 0px;
+        /* grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); */
+        gap: 10px;
     }
 
     .years-grid {
