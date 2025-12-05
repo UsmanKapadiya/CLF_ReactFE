@@ -3,11 +3,11 @@
 }
 
 .clf_page_title {
-    margin: 40px 0 40px 10px;
+    margin: 50px 0 50px 10px;
 }
 
 .clf_page_title img {
-    max-width: 100%;
+    /* max-width: 100%; */
     height: auto;
 }
 
@@ -23,17 +23,6 @@
 /* Sidebar */
 .gallery-sidebar {
     width: 220px;
-}
-
-.sidebar-title {
-    font-family: "Abel", sans-serif;
-    font-size: 18px;
-    color: #333;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin: 0 0 15px 0;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #7b1111;
 }
 
 .sidebar-filters {
