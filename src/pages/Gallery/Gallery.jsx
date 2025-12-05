@@ -400,8 +400,8 @@ function Gallery() {
 
             <div className="gallery-container">
                 {/* Sidebar Category Filters */}
-                <div className="gallery-sidebar">
-                    <ul className="sidebar-filters">
+                <div className="gallery-sidebar mb-0">
+                    <ul className="sidebar-filters mb-0">
                         {MAIN_CATEGORIES.map(category => (
                             <li
                                 key={category}
@@ -503,7 +503,7 @@ function Gallery() {
                             )}
 
                             {showAllGalleries ? (
-                                <div className="photos-grid">
+                                <div className="photos-grid ml-10">
                                     {years.map(year =>
                                         galleryPhotos[year].map((catalog, catalogIndex) => (
                                             <div key={`${year}-${catalogIndex}`} className="photo-item-wrapper">
@@ -538,7 +538,7 @@ function Gallery() {
                                     )}
                                 </div>
                             ) : selectedYear && !selectedCatalog ? (
-                                <div className="photos-grid">
+                                <div className="photos-grid ml-10">
                                     {galleryPhotos[selectedYear].map((catalog, catalogIndex) => (
                                         <div key={catalogIndex} className="photo-item-wrapper">
                                             <div
