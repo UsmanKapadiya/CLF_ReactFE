@@ -88,9 +88,11 @@ function About() {
                     <main className="about-content">
                         {selectedItem ? (
                             <div className="content-detail">
-                                <h1 className="content-title">{selectedItem.name}</h1>
-                                <h2 className="content-subtitle">{selectedItem.title}</h2>
-                                <p className="content-description">{selectedItem.description}</p>
+                                <h2 className="content-title">{selectedItem.title}</h2>
+                                <div 
+                                    className="content-description" 
+                                    dangerouslySetInnerHTML={{ __html: selectedItem.description }}
+                                />
                             </div>
                         ) : (
                             <div className="">
