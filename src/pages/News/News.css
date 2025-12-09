@@ -264,24 +264,46 @@
     }
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) { */
+@media only screen and (min-width: 768px) and (max-width: 959px) {
+
     .news-container {
-        padding: 1.5rem 1rem;
+        max-width: 768px;
+        margin: 0 auto;
+        padding: 0;
+        position: relative;
+    }
+
+    .clf_page_title {
+        max-width: 768px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 2rem;
     }
 
     .news-layout {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
+        /* grid-template-columns: 1fr; */
+        gap: 0rem;
     }
 
     .news-sidebar {
         position: static;
         max-height: none;
+        padding: 0;
     }
 
     .news-content {
-        padding: 2rem;
-        margin-right: 20px;
+        padding: 0;
+        margin-right: 0;
+        padding-top: 0 !important;
+    }
+
+    .news-list {
+        padding: 0;
+    }
+
+    .news-detail {
+        padding: 0;
     }
 
     .news-content img {
@@ -292,7 +314,7 @@
 
     .newsText {
         width: 100% !important;
-        margin-right: 20px;
+        margin-right: 0;
     }
 
     .content-title {
@@ -301,24 +323,32 @@
 
     .content-description {
         font-size: 1rem;
-        margin-right: 20px;
+        margin-right: 0;
     }
 
     .news-item-title {
         font-size: 20px;
         line-height: 26px;
     }
-
-
 }
 
 @media (max-width: 480px) {
     .news-container {
-        padding: 1rem 0.75rem;
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 1rem 0;
+    }
+
+    .clf_page_title {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 300px;
+        padding: 0 1rem;
     }
 
     .news-sidebar {
-        padding: 1rem;
+        padding: 0;
     }
 
     .news-sidebar .sidebar-title {
@@ -326,13 +356,22 @@
     }
 
     .news-sidebar .sidebar-item {
-        padding: 0.625rem 0.75rem;
+        padding: 0px;
         font-size: 0.9rem;
     }
 
+    .news-list {
+        padding: 0;
+    }
+
     .news-content {
-        padding: 1.5rem;
-        margin-right: 20px;
+        padding: 0;
+        margin-right: 0;
+        padding-top: 0px !important; 
+    }
+
+    .news-detail {
+        padding: 0 1rem;
     }
 
     .news-content img {
@@ -343,7 +382,7 @@
 
     .newsText {
         width: 100% !important;
-        margin-right: 20px;
+        margin-right: 0;
     }
 
     .content-title {
@@ -352,7 +391,7 @@
 
     .content-description {
         font-size: 0.95rem;
-        margin-right: 20px;
+        margin-right: 0;
     }
 
     .news-item-title {
@@ -367,6 +406,4 @@
     .read-more-link {
         font-size: 12px;
     }
-
-
 }

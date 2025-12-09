@@ -74,8 +74,11 @@
 }
 
 @media (max-width: 480px) {
+    .pagination{
+        padding: 1rem;
+    }
     .pagination-btn {
         padding: 5px 10px;
-        font-size: 11px;
+        font-size: 10px;
     }
 }
