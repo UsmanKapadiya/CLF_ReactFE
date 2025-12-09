@@ -222,13 +222,38 @@
     font-family: "Abel", Arial, Helvetica, sans-serif;
 }
 
+.news-detail-description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    color: #333;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+    font-family: "Abel", Arial, Helvetica, sans-serif;
+}
+
+.news-detail-description p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.news-detail-description * {
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+}
+
 .read-more-btn {
     display: inline-block;
     color: #333;
     font-size: 13px;
     text-decoration: none;
     font-family: "Abel", Arial, Helvetica, sans-serif;
-    font-weight: bold;
+    /* font-weight: bold; */
     transition: all 0.3s ease;
     border-bottom: 1px dashed transparent;
     padding-bottom: 0;

@@ -33,9 +33,9 @@ function NewsCarousel() {
                     <span className="underline-text">LAT</span>EST NEWS
                 </h2>
                 <div className="news-controls">
-                    <button 
-                        className="arrow-btn" 
-                        onClick={handlePrev} 
+                    <button
+                        className="arrow-btn"
+                        onClick={handlePrev}
                         aria-label="Previous news"
                         type="button"
                     >
@@ -43,9 +43,9 @@ function NewsCarousel() {
                             <path d="M15 18l-6-6 6-6" />
                         </svg>
                     </button>
-                    <button 
-                        className="arrow-btn" 
-                        onClick={handleNext} 
+                    <button
+                        className="arrow-btn"
+                        onClick={handleNext}
                         aria-label="Next news"
                         type="button"
                     >
@@ -67,7 +67,10 @@ function NewsCarousel() {
                             </time>
                         </div>
                         <div className="news-content">
-                            <p className="news-description pl-0 pr-0">{news.description}</p>
+                            <div
+                                className="news-detail-description"
+                                dangerouslySetInnerHTML={{ __html: news.description }}
+                            />
                         </div>
                         <div className="news-footer">
                             <a href={`/news/${news.id}`} className="read-more-btn">
