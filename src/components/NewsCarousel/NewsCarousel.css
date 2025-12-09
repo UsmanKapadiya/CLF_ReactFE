@@ -199,6 +199,7 @@
     margin: 0 0 10px 0;
     font-family: "Abel", Arial, Helvetica, sans-serif;
 }
+
 /* Utility Classes */
 .pl-0 {
     padding-left: 0;
@@ -238,6 +239,21 @@
     text-decoration: none;
     border-bottom: 1px dashed #dfdfdf;
     transform: translateY(-1px);
+}
+
+@media (max-width: 480px) {
+    .news-carousel {
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .post-container {
+        max-width: 300px;
+    }
+    .news-description {
+        padding: 0px !important;
+        margin: 0px !important;
+    }
 }
 
 /* Mobile: Single box horizontally displayed */

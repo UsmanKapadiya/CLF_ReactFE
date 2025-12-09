@@ -502,24 +502,34 @@
     }
 }
 
-@media (max-width: 768px) {
+@media only screen and (min-width: 768px) and (max-width: 959px) {
     .about-container {
-        padding: 1.5rem 1rem;
+        max-width: 768px;
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    .clf_page_title {
+        max-width: 768px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 2rem;
     }
 
     .about-layout {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 0rem;
     }
 
     .about-sidebar {
         position: static;
         max-height: none;
+        padding: 0;
     }
 
     .about-content {
-        padding: 2rem;
-        margin-right: 20px;
+        padding: 0;
+        margin-right: 0;
     }
 
     .about-content img {
@@ -530,7 +540,7 @@
 
     .aboutText {
         width: 100% !important;
-        margin-right: 20px;
+        margin-right: 0;
     }
 
     .content-title {
@@ -539,17 +549,31 @@
 
     .content-description {
         font-size: 1rem;
-        margin-right: 20px;
+        margin-right: 0;
     }
 }
 
 @media (max-width: 480px) {
     .about-container {
-        padding: 1rem 0.75rem;
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 1rem 0;
+    }
+
+    .clf_page_title {
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 1rem;
+    }
+      .about-layout {
+        grid-template-columns: 1fr;
+        gap: 0rem;
     }
 
     .about-sidebar {
-        padding: 1rem;
+        padding: 0;
     }
 
     .sidebar-title {
@@ -557,7 +581,7 @@
     }
 
     .sidebar-item {
-        padding: 0.625rem 0.75rem;
+        padding: 0px;
         font-size: 0.9rem;
     }
 
@@ -567,8 +591,8 @@
     }
 
     .about-content {
-        padding: 0rem !important;
-        margin-right: 20px;
+        padding: 0;
+        margin-right: 0;
     }
 
     .about-content img {
@@ -579,7 +603,7 @@
 
     .aboutText {
         width: 100% !important;
-        margin-right: 20px;
+        margin-right: 0;
     }
 
     .content-title {
@@ -588,7 +612,7 @@
 
     .content-description {
         font-size: 0.95rem;
-        margin-right: 20px;
+        margin-right: 0;
     }
 
     .content-placeholder h2 {

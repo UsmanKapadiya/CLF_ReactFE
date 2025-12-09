@@ -6,7 +6,7 @@ import { LOCATIONS_DATA } from '../../constants/locationsData';
 
 function Home() {
   return (
-    <div className="mt-1">
+    <div className="mt-1 container">
       <section className="slider">
         <img src={Banner} alt="CLF Kung Fu Club martial arts training banner" className="slides" />
         <article className="post static">

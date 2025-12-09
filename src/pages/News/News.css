@@ -339,6 +339,10 @@
         margin-right: auto;
         padding: 1rem 0;
     }
+    .news-layout {
+        grid-template-columns: auto;
+        gap: 1.5rem;
+    }
 
     .clf_page_title {
         margin-left: auto;
