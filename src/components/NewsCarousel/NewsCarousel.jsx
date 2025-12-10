@@ -3,28 +3,43 @@ import PropTypes from 'prop-types';
 import './NewsCarousel.css';
 import { NEWS_DATA } from '../../constants/newsData';
 
+const TRUNCATE_LENGTH = 300;
+
 function NewsCarousel() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState('next');
 
+    // Sort news by date (most recent first) - memoized
+    const sortedNews = useMemo(
+        () => [...NEWS_DATA].sort((a, b) => new Date(b.date) - new Date(a.date)),
+        []
+    );
+
     const handlePrev = useCallback(() => {
         setDirection('prev');
         setCurrentIndex((prevIndex) =>
-            prevIndex === 0 ? NEWS_DATA.length - 1 : prevIndex - 1
+            prevIndex === 0 ? sortedNews.length - 1 : prevIndex - 1
         );
-    }, []);
+    }, [sortedNews.length]);
 
     const handleNext = useCallback(() => {
         setDirection('next');
         setCurrentIndex((prevIndex) =>
-            prevIndex >= NEWS_DATA.length - 1 ? 0 : prevIndex + 1
+            prevIndex >= sortedNews.length - 1 ? 0 : prevIndex + 1
         );
-    }, []);
+    }, [sortedNews.length]);
 
     const displayedNews = useMemo(() => [
-        NEWS_DATA[currentIndex % NEWS_DATA.length],
-        NEWS_DATA[(currentIndex + 1) % NEWS_DATA.length]
-    ], [currentIndex]);
+        sortedNews[currentIndex % sortedNews.length],
+        sortedNews[(currentIndex + 1) % sortedNews.length]
+    ], [currentIndex, sortedNews]);
+
+    const truncateText = useCallback((text, maxLength = TRUNCATE_LENGTH) => {
+        // Remove HTML tags
+        const plainText = text.replace(/<[^>]*>/g, '');
+        if (plainText.length <= maxLength) return plainText;
+        return `${plainText.substring(0, maxLength).trim()}[...]`;
+    }, []);
 
     return (
         <div className="news-carousel">
@@ -67,10 +82,13 @@ function NewsCarousel() {
                             </time>
                         </div>
                         <div className="news-content">
-                            <div
+                            <p className="news-item-description">
+                                {truncateText(news.description)}
+                            </p>
+                            {/* <div
                                 className="news-detail-description"
                                 dangerouslySetInnerHTML={{ __html: news.description }}
-                            />
+                            /> */}
                         </div>
                         <div className="news-footer">
                             <a href={`/news/${news.id}`} className="read-more-btn">

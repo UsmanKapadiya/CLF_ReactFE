@@ -45,10 +45,12 @@ function News() {
         };
     }, []);
 
-    // Truncate description - useCallback for stable reference
+    // Strip HTML tags and truncate description - useCallback for stable reference
     const truncateText = useCallback((text, maxLength = TRUNCATE_LENGTH) => {
-        if (text.length <= maxLength) return text;
-        return `${text.substring(0, maxLength).trim()}[...]`;
+        // Remove HTML tags
+        const plainText = text.replace(/<[^>]*>/g, '');
+        if (plainText.length <= maxLength) return plainText;
+        return `${plainText.substring(0, maxLength).trim()}[...]`;
     }, []);
 
     // Handle page change - useCallback for stable reference
@@ -148,7 +150,7 @@ function News() {
                                 <time className="news-item-date" dateTime={selectedNews.date}>
                                     {selectedNews.date}
                                 </time>
-                                <div 
+                                <div
                                     className="news-detail-description"
                                     dangerouslySetInnerHTML={{ __html: selectedNews.description }}
                                 />
@@ -159,7 +161,7 @@ function News() {
                                     {currentNews.map(renderNewsItem)}
                                 </div>
 
-                                <Pagination 
+                                <Pagination
                                     currentPage={currentPage}
                                     totalPages={totalPages}
                                     onPageChange={handlePageChange}
