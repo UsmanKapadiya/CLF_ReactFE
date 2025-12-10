@@ -59,7 +59,7 @@
     margin-bottom: 15px;
     text-transform: uppercase;
     font-weight: 900;
-    color: #333;
+    color: var(--text-primary);
     font-family: 'Lato', sans-serif;
 }
 
@@ -78,7 +78,7 @@
     font-size: 13px;
     font-weight: 400;
     cursor: pointer;
-    color: #7b1111;
+    color: var(--primary-color);
     display: inline-block;
     padding-bottom: 5px;
 }
@@ -93,7 +93,7 @@
     font-weight: 400;
     padding-left: 2rem;
     font-size: 13px;
-    color: #7b1111;
+    color: var(--primary-color);
 }
 
 .sidebar-item.child:hover {
@@ -117,7 +117,7 @@
     font-size: 14px;
     text-align: justify;
     line-height: 1.6;
-    color: #333;
+    color: var(--text-primary);
     margin-right: 20px;
 }
 
@@ -169,8 +169,8 @@
     font-size: 24px;
     line-height: 30px;
     margin-bottom: 20px;
-    border-bottom: 1px solid #666;
-    color: #333;
+    border-bottom: 1px solid var(--text-muted);
+    color: var(--text-primary);
     font-family: 'Lato', sans-serif;
     font-weight: 900
 }
@@ -180,14 +180,14 @@
 .content-description {
     font-size: 1.1rem;
     line-height: 1.8;
-    color: #555;
+    color: var(--text-secondary);
     text-align: justify;
 }
 
 .content-description p {
     font-size: 14px;
     text-align: justify;
-    color:#333
+    color: var(--text-primary)
 }
 .content-description p {
     margin-bottom: 1rem;
@@ -202,15 +202,15 @@
     font-size: 24px;
     line-height: 30px;
     margin-bottom: 20px;
-    border-bottom: 1px solid #666;
-    color: #333;
+    border-bottom: 1px solid var(--text-muted);
+    color: var(--text-primary);
     font-family: 'Lato', sans-serif;
     font-weight: 900;
 }
 
 .content-description h3 {
     font-size: 1.4rem;
-    color: #c8102e;
+    color: var(--secondary-color);
     margin-top: 1.5rem;
     margin-bottom: 1rem;
     font-weight: 600;
@@ -233,14 +233,14 @@
 }
 
 .content-description a {
-    color: #c8102e;
+    color: var(--secondary-color);
     text-decoration: none;
-    border-bottom: 1px solid #c8102e;
+    border-bottom: 1px solid var(--secondary-color);
 }
 
 .content-description a:hover {
-    color: #a00d26;
-    border-bottom-color: #a00d26;
+    color: var(--secondary-dark);
+    border-bottom-color: var(--secondary-dark);
 }
 
 .content-placeholder {
@@ -255,13 +255,13 @@
 
 .content-placeholder h2 {
     font-size: 2rem;
-    color: #c8102e;
+    color: var(--secondary-color);
     margin-bottom: 1rem;
 }
 
 .content-placeholder p {
     font-size: 1.1rem;
-    color: #666;
+    color: var(--text-muted);
     max-width: 500px;
 }
 

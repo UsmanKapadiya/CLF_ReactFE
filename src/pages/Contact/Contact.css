@@ -21,7 +21,7 @@
 .contact-intro {
     font-family: "Abel", Arial, Helvetica, sans-serif;
     font-size: 14px;
-    color: #333;
+    color: var(--text-primary);
     margin: 0 0 1.5rem 0;
     line-height: 1.6;
     text-align: justify;
@@ -83,7 +83,7 @@
 .form-group input,
 .form-group textarea {
     background: none;
-    border: 1px solid #d8d8d8;
+    border: 1px solid var(--border-dark);
     padding: 10px;
     color: #888;
     width: -webkit-fill-available;
@@ -97,7 +97,7 @@
 .form-group textarea:focus {
     outline: none;
     border: none;
-    background-color: #f3f3f3;
+    background-color: var(--bg-gray);
 }
 
 .form-group input.error,
@@ -120,8 +120,8 @@
 
 /* Submit Button */
 .submit-btn {
-    background: #7b1111;
-    color: #fff;
+    background: var(--primary-color);
+    color: var(--bg-white);
     display: inline-block;
     font-size: 11px;
     cursor: pointer;
@@ -136,7 +136,7 @@
 }
 
 .submit-btn:active {
-    background: #450909;
+    background: var(--primary-hover);
 }
 
 /* Captcha Styles */
@@ -152,20 +152,20 @@
 }
 
 .captcha-code {
-    background: #f3f3f3;
-    border: 1px solid #d8d8d8;
+    background: var(--bg-gray);
+    border: 1px solid var(--border-dark);
     padding: 10px 20px;
     font-family: "Courier New", monospace;
     font-size: 18px;
     font-weight: bold;
     letter-spacing: 5px;
-    color: #7b1111;
+    color: var(--primary-color);
     user-select: none;
 }
 
 .captcha-refresh {
-    background: #7b1111;
-    color: #fff;
+    background: var(--primary-color);
+    color: var(--bg-white);
     border: none;
     border-radius: 0;
     padding: 8px 15px;

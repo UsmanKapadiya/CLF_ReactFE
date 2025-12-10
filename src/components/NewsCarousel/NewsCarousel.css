@@ -182,7 +182,7 @@
 }
 
 .news-date {
-    color: #333333;
+    color: var(--text-primary);
     font-size: 10px;
     font-weight: bold;
     text-transform: uppercase;
@@ -193,7 +193,7 @@
 }
 
 .news-title {
-    color: #333;
+    color: var(--text-primary);
     font-size: 18px;
     font-weight: bold;
     margin: 0 0 10px 0;
@@ -215,7 +215,7 @@
     display: -webkit-box;
     -webkit-line-clamp: 6;
     -webkit-box-orient: vertical;
-    color: #333;
+    color: var(--text-primary);
     font-size: 14px;
     line-height: 1.6;
     margin: 0 0 10px 0;
@@ -229,7 +229,7 @@
     -webkit-line-clamp: 4;
     line-clamp: 4;
     -webkit-box-orient: vertical;
-    color: #333;
+    color: var(--text-primary);
     font-size: 14px;
     line-height: 1.6;
     margin: 0;
@@ -249,7 +249,7 @@
 
 .read-more-btn {
     display: inline-block;
-    color: #333;
+    color: var(--text-primary);
     font-size: 13px;
     text-decoration: none;
     font-family: "Abel", Arial, Helvetica, sans-serif;
@@ -260,9 +260,9 @@
 }
 
 .read-more-btn:hover {
-    color: #666;
+    color: var(--text-muted);
     text-decoration: none;
-    border-bottom: 1px dashed #dfdfdf;
+    border-bottom: 1px dashed var(--border-light);
     transform: translateY(-1px);
 }
 

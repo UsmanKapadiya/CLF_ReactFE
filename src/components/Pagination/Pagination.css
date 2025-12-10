@@ -30,7 +30,7 @@
 }
 
 .pagination-btn:hover:not(:disabled) {
-    background-color: #7b1111;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     outline: none;
@@ -38,8 +38,8 @@
 
 .pagination-btn.active {
     background-color: white !important;
-    color: #333333 !important;
-    border: solid 1px #7b1111 !important;
+    color: var(--text-primary) !important;
+    border: solid 1px var(--primary-color) !important;
     outline: none;
 }
 
@@ -57,7 +57,7 @@
     padding: 8px 16px;
     font-size: 14px;
     font-weight: 600;
-    color: #666;
+    color: var(--text-muted);
     font-family: 'Lato', sans-serif;
 }
 

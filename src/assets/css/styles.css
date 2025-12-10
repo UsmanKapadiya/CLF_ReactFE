@@ -1,6 +1,6 @@
 /* Global Styles */
 body {
-    color: #333;
+    color: var(--text-primary);
 }
 
 main {
@@ -82,7 +82,7 @@ main {
     font-family: "Abel", Arial, Helvetica, sans-serif;
     font-size: 30px;
     font-weight: 400;
-    color: #7b1111;
+    color: var(--primary-color);
     text-transform: uppercase;
     margin: 0;
     line-height: 34px;
@@ -90,12 +90,12 @@ main {
 }
 
 .underline-loc {
-    border-bottom: 2px solid #7b1111;
+    border-bottom: 2px solid var(--primary-color);
     padding-bottom: 14px;
 }
 
 .widget-title {
-    color: #7b1111;
+    color: var(--primary-color);
     font-size: 16px;
     font-weight: 700;
     margin-bottom: 10px;
