@@ -4,6 +4,7 @@ import './News.css';
 import Title from '../../assets/news_title.png';
 import { NEWS_DATA } from '../../constants/newsData';
 import Pagination from '../../components/Pagination/Pagination';
+import MetaTitle from '../../components/MetaTags/MetaTags';
 
 const ITEMS_PER_PAGE = 5;
 const RECENT_NEWS_COUNT = 5;
@@ -124,6 +125,7 @@ function News() {
 
     return (
         <div className="news-page">
+            <MetaTitle pageTitle={selectedNews ? `${selectedNews.title} | 振江武術館` : 'News振江武術館 | Clf Canada'} />
             <section className="clf_page_title">
                 <img src={Title} alt="CLF Kung Fu Club news banner" />
             </section>

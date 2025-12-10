@@ -3,10 +3,12 @@ import welcome from '../../assets/welcome1.png';
 import NewsCarousel from '../../components/NewsCarousel/NewsCarousel';
 import LocationCard from '../../components/LocationCard/LocationCard';
 import { LOCATIONS_DATA } from '../../constants/locationsData';
+import MetaTitle from '../../components/MetaTags/MetaTags';
 
 function Home() {
   return (
     <div className="mt-1 container">
+      <MetaTitle pageTitle={"振江武術館 | Clf Canada"} />
       <section className="slider">
         <img src={Banner} alt="CLF Kung Fu Club martial arts training banner" className="slides" />
         <article className="post static">
@@ -20,11 +22,11 @@ function Home() {
           </div>
         </article>
       </section>
-      
+
       <section className="container-fluid home_post_back" aria-label="Latest news section">
         <NewsCarousel />
       </section>
-      
+
       <section className="three-column-grid" aria-label="Training locations">
         <div className="column column-1">
           <h1 className="location-heading">

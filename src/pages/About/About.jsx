@@ -3,6 +3,7 @@ import './About.css';
 import Title from '../../assets/About.png';
 import AboutBanner from "../../assets/aboutBanner.png"
 import { ABOUT_DATA } from '../../constants/aboutData';
+import MetaTitle from '../../components/MetaTags/MetaTags';
 
 function About() {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -59,6 +60,7 @@ function About() {
 
     return (
         <div className="">
+            <MetaTitle pageTitle={"About振江武術館"} />
             <section className="clf_page_title">
                 <img src={Title} alt="CLF Kung Fu Club about us banner" />
             </section>
@@ -89,8 +91,8 @@ function About() {
                         {selectedItem ? (
                             <div className="content-detail">
                                 <h2 className="content-title">{selectedItem.title}</h2>
-                                <div 
-                                    className="content-description" 
+                                <div
+                                    className="content-description"
                                     dangerouslySetInnerHTML={{ __html: selectedItem.description }}
                                 />
                             </div>

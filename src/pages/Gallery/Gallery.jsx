@@ -6,6 +6,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import { GALLERY_CATEGORIES, galleryVideos, galleryPhotos } from '../../constants/galleryData';
+import MetaTitle from '../../components/MetaTags/MetaTags';
 
 /* Removed embedded data - now imported from constants/galleryData.js 
 const galleryVideos = [
@@ -289,7 +290,7 @@ const galleryPhotos = {
 
 function Gallery() {
     const location = useLocation();
-    
+
     // Memoize computed values
     const years = useMemo(() => Object.keys(galleryPhotos).sort((a, b) => b - a), []);
     const defaultYear = useMemo(() => {
@@ -385,8 +386,15 @@ function Gallery() {
         setVideoLightbox(null);
     }, []);
 
+    const getGalleryTitle = () => {
+        if (mainCategory === 'photos') return 'Photos | 振江武術館';
+        if (mainCategory === 'videos') return 'Videos | 振江武術館';
+        return 'Gallery振江武術館';
+    };
+
     return (
         <div className="gallery-page">
+            <MetaTitle pageTitle={getGalleryTitle()} />
             <section className="clf_page_title">
                 <img src={Title} alt="CLF Kung Fu Club gallery banner" />
             </section>

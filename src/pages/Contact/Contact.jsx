@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import './Contact.css';
 import Title from '../../assets/contact_title.png';
 import Map from '../../assets/map.png';
+import MetaTitle from '../../components/MetaTags/MetaTags';
 
 const INITIAL_FORM_STATE = {
     name: '',
@@ -39,7 +40,7 @@ function Contact() {
     const handleChange = useCallback((e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        
+
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
@@ -47,7 +48,7 @@ function Contact() {
 
     const handleBlur = useCallback((e) => {
         const { name, value } = e.target;
-        
+
         if (name === 'email' && value.trim() && !EMAIL_REGEX.test(value)) {
             setErrors(prev => ({ ...prev, email: 'Email address seems invalid.' }));
         }
@@ -91,7 +92,7 @@ function Contact() {
 
         // TODO: Send form data to backend API
         console.log('Form submitted:', formData);
-        
+
         setSubmitStatus('success');
         setFormData(INITIAL_FORM_STATE);
         generateCaptcha();
@@ -130,6 +131,7 @@ function Contact() {
 
     return (
         <div className="contact-page">
+            <MetaTitle pageTitle={"Contact | 振江武術館"} />
             <section className="clf_page_title">
                 <img src={Title} alt="CLF Kung Fu Club contact banner" />
             </section>
@@ -157,9 +159,9 @@ function Contact() {
                                 <div className="form-group captcha-group">
                                     <div className="captcha-container">
                                         <div className="captcha-code">{captchaCode}</div>
-                                        <button 
-                                            type="button" 
-                                            className="captcha-refresh" 
+                                        <button
+                                            type="button"
+                                            className="captcha-refresh"
                                             onClick={generateCaptcha}
                                             title="Generate new captcha"
                                         >
@@ -186,7 +188,7 @@ function Contact() {
                     </div>
 
                     <div className="contact-box contact-image-box">
-                        <a 
+                        <a
                             href={GOOGLE_MAPS_URL}
                             target="_blank"
                             rel="noopener noreferrer"
