@@ -8,14 +8,32 @@ import MetaTitle from '../../components/MetaTags/MetaTags';
 function About() {
     const [selectedItem, setSelectedItem] = useState(null);
 
-    // Filter data by category
-    const styleData = useMemo(() =>
-        ABOUT_DATA.filter(item => item.category === 1),
-        []);
+    // Define category order
+    const orderedCategories = ['style', 'biography'];
 
-    const biographyData = useMemo(() =>
-        ABOUT_DATA.filter(item => item.category === 2),
-        []);
+    // Get unique categories from data in specified order
+    const categories = useMemo(() => {
+        const uniqueCategories = [...new Set(ABOUT_DATA.map(item => item.category))];
+        // Sort by predefined order, then alphabetically for any other categories
+        return uniqueCategories.sort((a, b) => {
+            const indexA = orderedCategories.indexOf(a);
+            const indexB = orderedCategories.indexOf(b);
+            
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
+            return a.localeCompare(b);
+        });
+    }, []);
+
+    // Group data by category
+    const categoryData = useMemo(() => {
+        const grouped = {};
+        categories.forEach(category => {
+            grouped[category] = ABOUT_DATA.filter(item => item.category === category);
+        });
+        return grouped;
+    }, [categories]);
 
     // Get parent items (no parent_id)
     const getParentItems = (data) =>
@@ -69,27 +87,30 @@ function About() {
                 <div className="about-layout">
                     {/* Left Sidebar */}
                     <aside className="about-sidebar">
-                        {/* STYLE Section */}
-                        <div className="sidebar-category">
-                            <h2 className="sidebar-title">STYLE</h2>
-                            <div className="sidebar-list">
-                                {renderHierarchicalList(styleData)}
+                        {categories.map(category => (
+                            <div key={category} className="sidebar-category">
+                                <h2 className="sidebar-title">{category.toUpperCase()}</h2>
+                                <div className="sidebar-list">
+                                    {renderHierarchicalList(categoryData[category])}
+                                </div>
                             </div>
-                        </div>
-
-                        {/* BIOGRAPHIES Section */}
-                        <div className="sidebar-category">
-                            <h2 className="sidebar-title">BIOGRAPHIES</h2>
-                            <div className="sidebar-list">
-                                {renderHierarchicalList(biographyData)}
-                            </div>
-                        </div>
+                        ))}
                     </aside>
 
                     {/* Main Content */}
                     <main className="about-content">
                         {selectedItem ? (
                             <div className="content-detail">
+                                {/* <div className="category-label" style={{
+                                    fontSize: '12px',
+                                    color: 'var(--text-muted)',
+                                    textTransform: 'uppercase',
+                                    fontWeight: '600',
+                                    marginBottom: '10px',
+                                    letterSpacing: '0.5px'
+                                }}>
+                                    {selectedItem.category.toUpperCase()} qws
+                                </div> */}
                                 <h2 className="content-title">{selectedItem.title}</h2>
                                 <div
                                     className="content-description"
