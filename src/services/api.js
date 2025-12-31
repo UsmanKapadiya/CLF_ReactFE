@@ -1,51 +1,42 @@
-import axios from 'axios';
+// Base API configuration
+const API_BASE_URL = 'http://localhost:5000/api';
 
-// API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-const API_TIMEOUT = 30000;
+// API client with common configuration
+const apiClient = async (endpoint, options = {}) => {
+  const url = `${API_BASE_URL}${endpoint}`;
 
-const instance = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: API_TIMEOUT,
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  },
-});
-
-// Response Interceptor for error handling
-instance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Handle network errors
-    if (!error.response) {
-      console.error('Network error:', error.message);
-    }
-    return Promise.reject(error);
+  // Only set Content-Type to application/json if not sending FormData
+  let headers = { ...options.headers };
+  if (!(options.body instanceof FormData)) {
+    headers['Content-Type'] = headers['Content-Type'] || 'application/json';
   }
-);
 
-const responseBody = (response) => response.data;
+  const config = {
+    headers,
+    ...options,
+  };
 
-const requests = {
-  get: (url, params, headers) =>
-    instance.get(url, { params, headers }).then(responseBody),
+  // Add token to headers if it exists
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
 
-  post: (url, body) => instance.post(url, body).then(responseBody),
+  try {
+    const response = await fetch(url, config);
+    const data = await response.json();
 
-  put: (url, body) => instance.put(url, body).then(responseBody),
+    if (!response.ok) {
+      throw new Error(data.message || 'Something went wrong');
+    }
 
-  patch: (url, body) => instance.patch(url, body).then(responseBody),
-
-  delete: (url, body) =>
-    instance.delete(url, { data: body }).then(responseBody),
-
-  upload: (url, formData) =>
-    instance.post(url, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }).then(responseBody),
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || 'Network error occurred'
+    };
+  }
 };
 
-export default requests;
+export default apiClient;

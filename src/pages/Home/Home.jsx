@@ -4,8 +4,26 @@ import NewsCarousel from '../../components/NewsCarousel/NewsCarousel';
 import LocationCard from '../../components/LocationCard/LocationCard';
 import { LOCATIONS_DATA } from '../../constants/locationsData';
 import MetaTitle from '../../components/MetaTags/MetaTags';
+import { useEffect, useState } from 'react';
+import { getAllNews } from '../../services/ApiServices';
 
 function Home() {
+  const [recentNews, setRecentNews] = useState([]);
+  const [page, setPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      const res = await getAllNews(page, itemsPerPage)
+      if (res.success) {
+        setRecentNews(res.data?.data || []);
+      } else {
+        setError(res.error || 'Failed to fetch news');
+      }
+    };
+    fetchNews();
+  }, []);
+
   return (
     <div className="mt-1 container">
       <MetaTitle pageTitle={"振江武術館 | Clf Canada"} />
@@ -24,7 +42,7 @@ function Home() {
       </section>
 
       <section className="container-fluid home_post_back" aria-label="Latest news section">
-        <NewsCarousel />
+        <NewsCarousel newsData={recentNews} />
       </section>
 
       <section className="three-column-grid" aria-label="Training locations">

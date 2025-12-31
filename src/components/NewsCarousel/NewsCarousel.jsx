@@ -1,18 +1,27 @@
 import { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import './NewsCarousel.css';
-import { NEWS_DATA } from '../../constants/newsData';
+// import { NewsData } from '../../constants/newsData';
 
 const TRUNCATE_LENGTH = 300;
 
-function NewsCarousel() {
+function NewsCarousel({ newsData }) {
+        // Helper to format date for URL
+        const formatDateToUrl = useCallback((dateString) => {
+            const date = new Date(dateString);
+            return {
+                year: date.getFullYear(),
+                month: String(date.getMonth() + 1).padStart(2, '0'),
+                day: String(date.getDate()).padStart(2, '0')
+            };
+        }, []);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState('next');
 
     // Sort news by date (most recent first) - memoized
     const sortedNews = useMemo(
-        () => [...NEWS_DATA].sort((a, b) => new Date(b.date) - new Date(a.date)),
-        []
+        () => [...(newsData || [])].sort((a, b) => new Date(b.date) - new Date(a.date)),
+        [newsData]
     );
 
     const handlePrev = useCallback(() => {
@@ -40,6 +49,21 @@ function NewsCarousel() {
         if (plainText.length <= maxLength) return plainText;
         return `${plainText.substring(0, maxLength).trim()}[...]`;
     }, []);
+
+    if (!sortedNews || sortedNews.length === 0) {
+        return (
+            <div className="news-carousel">
+                <div className="news-header">
+                    <h2>
+                        <span className="underline-text">LAT</span>EST NEWS
+                    </h2>
+                </div>
+                <div className="news-empty-message">
+                    <p>No news available.</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="news-carousel">
@@ -72,18 +96,23 @@ function NewsCarousel() {
             </div>
             <div className={`news-grid ${direction}`} key={currentIndex}>
                 {displayedNews.map((news) => (
-                    <article key={news.id} className="post group post-container">
+                    <article key={news._id} className="post group post-container">
                         <div className="post-intro post-intro-homepage">
                             <h2>
-                                <a href={`/news/${news.id}`}>{news.title}</a>
+                                <a href={(() => {
+                                    if (!news?.date || !news?.slug) return '#';
+                                    const { year, month, day } = formatDateToUrl(news.date);
+                                    return `/news/${year}/${month}/${day}/${news.slug}`;
+                                })()}
+                                >{news?.title}</a>
                             </h2>
-                            <time className="news-date" dateTime={news.date}>
-                                {news.date}
+                            <time className="news-item-date" dateTime={news?.date}>
+                                {news?.date ? new Date(news.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase() : ''}
                             </time>
                         </div>
                         <div className="news-content">
                             <p className="news-item-description">
-                                {truncateText(news.description)}
+                                {truncateText(news?.description)}
                             </p>
                             {/* <div
                                 className="news-detail-description"
@@ -91,7 +120,14 @@ function NewsCarousel() {
                             /> */}
                         </div>
                         <div className="news-footer">
-                            <a href={`/news/${news.id}`} className="read-more-btn">
+                            <a
+                                href={(() => {
+                                    if (!news?.date || !news?.slug) return '#';
+                                    const { year, month, day } = formatDateToUrl(news.date);
+                                    return `/news/${year}/${month}/${day}/${news.slug}`;
+                                })()}
+                                className="read-more-btn"
+                            >
                                 Read More »
                             </a>
                         </div>
@@ -105,7 +141,7 @@ function NewsCarousel() {
 NewsCarousel.propTypes = {
     newsData: PropTypes.arrayOf(
         PropTypes.shape({
-            id: PropTypes.number.isRequired,
+            _id: PropTypes.number.isRequired,
             title: PropTypes.string.isRequired,
             description: PropTypes.string.isRequired,
             date: PropTypes.string.isRequired

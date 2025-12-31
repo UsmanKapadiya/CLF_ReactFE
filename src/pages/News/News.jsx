@@ -2,11 +2,12 @@ import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './News.css';
 import Title from '../../assets/news_title.png';
-import { NEWS_DATA } from '../../constants/newsData';
+// import { newsData } from '../../constants/newsData';
 import Pagination from '../../components/Pagination/Pagination';
 import MetaTitle from '../../components/MetaTags/MetaTags';
+import { getAllNews } from '../../services/ApiServices';
 
-const ITEMS_PER_PAGE = 5;
+// const ITEMS_PER_PAGE = 1;
 const RECENT_NEWS_COUNT = 5;
 const TRUNCATE_LENGTH = 300;
 
@@ -14,12 +15,28 @@ function News() {
     const navigate = useNavigate();
     const { slug } = useParams();
     const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(5);
+    const [totalPage, setTotalPage] = useState(1);
     const [selectedNews, setSelectedNews] = useState(null);
+    const [newsData, setNewsData] = useState([])
 
+    useEffect(() => {
+        const fetchNews = async () => {
+            const res = await getAllNews(currentPage, itemsPerPage)
+            if (res.success) {
+                setNewsData(res.data?.data || []);
+                setTotalPage(res?.data?.totalpages || 1);
+            } else {
+                setNewsData([]);
+            }
+        };
+        fetchNews();
+    }, [currentPage, itemsPerPage]);
+    
     // Sort news by date (most recent first) - memoized
     const sortedNews = useMemo(
-        () => [...NEWS_DATA].sort((a, b) => new Date(b.date) - new Date(a.date)),
-        []
+        () => [...newsData].sort((a, b) => new Date(b.date) - new Date(a.date)),
+        [newsData]
     );
 
     // Get top 5 news for sidebar - memoized
@@ -28,14 +45,9 @@ function News() {
         [sortedNews]
     );
 
-    // Pagination calculations - memoized
-    const { totalPages, currentNews } = useMemo(() => {
-        const total = Math.ceil(sortedNews.length / ITEMS_PER_PAGE);
-        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-        const news = sortedNews.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-        return { totalPages: total, currentNews: news };
-    }, [sortedNews, currentPage]);
-
+    // Use API's totalpages for pagination
+    const totalPages = totalPage;
+    const currentNews = sortedNews;
     // Format date to URL parts - useCallback for stable reference
     const formatDateToUrl = useCallback((dateString) => {
         const date = new Date(dateString);
