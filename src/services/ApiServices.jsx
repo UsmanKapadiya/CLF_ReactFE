@@ -1,15 +1,3 @@
-// import requests from "./Api.js";
-
-// const ApiServices = {
-//    getAllNews: async (page, limit) => {
-//     return requests.get(`/news?page=${page}&limit=${limit}`);
-//   },
-
-//   getAllGallery: async () => {
-//     return requests.get(`/gallerys`);
-//   },
-// }
-// export default ApiServices;
 import apiClient from './api';
 
 //get news
@@ -29,3 +17,21 @@ export const getAboutList = async () => {
     return { success: false, error: error.message || 'Failed to fetch about list' };
   }
 };
+
+//get Photos
+export const getPhotosList = async () => {
+  try {
+    return await apiClient('/gallery/list-by-year');
+  } catch (error) {
+    return { success: false, error: error.message || 'Failed to fetch about list' };
+  }
+};
+
+//get Videos
+export const getAllVideos = async () => {
+  try {
+    return await apiClient('/videos');
+  } catch (error) {
+    return { success: false, error: error.message || 'Failed to fetch videos' };
+  }
+}
