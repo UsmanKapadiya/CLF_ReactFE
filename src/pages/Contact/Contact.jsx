@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { sendContactForm } from '../../services/ApiServices';
 import PropTypes from 'prop-types';
 import './Contact.css';
 import Title from '../../assets/contact_title.png';
@@ -80,7 +81,7 @@ function Contact() {
         return newErrors;
     }, [formData, captchaCode]);
 
-    const handleSubmit = useCallback((e) => {
+    const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
 
         const newErrors = validateForm();
@@ -90,14 +91,17 @@ function Contact() {
             return;
         }
 
-        // TODO: Send form data to backend API
-        console.log('Form submitted:', formData);
-
-        setSubmitStatus('success');
-        setFormData(INITIAL_FORM_STATE);
-        generateCaptcha();
-
-        setTimeout(() => setSubmitStatus(''), SUCCESS_MESSAGE_DURATION);
+        // Send form data to backend API
+        const res = await sendContactForm(formData);
+        if (res?.success) {
+            setSubmitStatus('success');
+            setFormData(INITIAL_FORM_STATE);
+            generateCaptcha();
+            setTimeout(() => setSubmitStatus(''), SUCCESS_MESSAGE_DURATION);
+        } else {
+            setSubmitStatus('error');
+            setTimeout(() => setSubmitStatus(''), SUCCESS_MESSAGE_DURATION);
+        }
     }, [formData, validateForm, generateCaptcha]);
 
     const renderFormField = (name, type, placeholder, additionalProps = {}) => (
@@ -147,6 +151,11 @@ function Contact() {
                             {submitStatus === 'success' && (
                                 <div className="alert alert-success">
                                     Thank you for your message! We will get back to you soon.
+                                </div>
+                            )}
+                            {submitStatus === 'error' && (
+                                <div className="alert alert-error">
+                                    Sorry, there was a problem sending your message. Please try again later.
                                 </div>
                             )}
 

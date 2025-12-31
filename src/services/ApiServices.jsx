@@ -1,3 +1,14 @@
+// send contact form
+export const sendContactForm = async (formData) => {
+  try {
+    return await apiClient('/contact', {
+      method: 'POST',
+      body: JSON.stringify(formData),
+    });
+  } catch (error) {
+    return { success: false, error: error.message || 'Failed to send contact form' };
+  }
+}
 import apiClient from './api';
 
 //get news
