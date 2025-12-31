@@ -1,55 +1,60 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import './About.css';
 import Title from '../../assets/About.png';
 import AboutBanner from "../../assets/aboutBanner.png"
-import { ABOUT_DATA } from '../../constants/aboutData';
 import MetaTitle from '../../components/MetaTags/MetaTags';
+import { getAboutList } from '../../services/ApiServices';
 
 function About() {
     const [selectedItem, setSelectedItem] = useState(null);
+    const [aboutData, setAboutData] = useState([{}]);
+
+    // Fetch about list on mount
+    useEffect(() => {
+        const fetchAbout = async () => {
+            const res = await getAboutList();
+            // You can replace this with setState if you want to use the data
+            if(res?.success){
+                setAboutData(res?.data?.data)
+            }
+        };
+        fetchAbout();
+    }, []);
 
     // Define category order
     const orderedCategories = ['style', 'biography'];
 
     // Get unique categories from data in specified order
     const categories = useMemo(() => {
-        const uniqueCategories = [...new Set(ABOUT_DATA.map(item => item.category))];
+        const uniqueCategories = [...new Set((aboutData || []).map(item => item.category))];
         // Sort by predefined order, then alphabetically for any other categories
         return uniqueCategories.sort((a, b) => {
             const indexA = orderedCategories.indexOf(a);
             const indexB = orderedCategories.indexOf(b);
-            
             if (indexA !== -1 && indexB !== -1) return indexA - indexB;
             if (indexA !== -1) return -1;
             if (indexB !== -1) return 1;
-            return a.localeCompare(b);
+            return a?.localeCompare?.(b) ?? 0;
         });
-    }, []);
+    }, [aboutData]);
 
     // Group data by category
     const categoryData = useMemo(() => {
         const grouped = {};
         categories.forEach(category => {
-            grouped[category] = ABOUT_DATA.filter(item => item.category === category);
+            grouped[category] = aboutData.filter(item => item.category === category);
         });
         return grouped;
     }, [categories]);
 
-    // Get parent items (no parent_id)
+    // Get parent items (no parent_id or parent_id is null/undefined)
     const getParentItems = (data) =>
-        data.filter(item => item.parent_id === null);
-
-    // Get child items for a parent
-    const getChildItems = (data, parentId) =>
-        data.filter(item => item.parent_id === parentId);
+        (data || []).filter(item => item && (item.parent_id === null || item.parent_id === undefined));
 
     // Render hierarchical list
     const renderHierarchicalList = (data) => {
         const parents = getParentItems(data);
-
         return parents.map(parent => {
-            const children = getChildItems(data, parent.id);
-
             return (
                 <div key={parent.id} className="sidebar-section">
                     <div
@@ -58,9 +63,9 @@ function About() {
                     >
                         {parent.name}
                     </div>
-                    {children.length > 0 && (
+                    {parent.children?.length > 0 && (
                         <div className="sidebar-children">
-                            {children.map(child => (
+                            {parent?.children.map(child => (
                                 <div
                                     key={child.id}
                                     className={`sidebar-item child ${selectedItem?.id === child.id ? 'active' : ''}`}
@@ -87,14 +92,15 @@ function About() {
                 <div className="about-layout">
                     {/* Left Sidebar */}
                     <aside className="about-sidebar">
-                        {categories.map(category => (
+                        {categories.map(category => {
+                            return(
                             <div key={category} className="sidebar-category">
-                                <h2 className="sidebar-title">{category.toUpperCase()}</h2>
+                                <h2 className="sidebar-title">{category}</h2>
                                 <div className="sidebar-list">
                                     {renderHierarchicalList(categoryData[category])}
                                 </div>
                             </div>
-                        ))}
+                        )})}
                     </aside>
 
                     {/* Main Content */}
