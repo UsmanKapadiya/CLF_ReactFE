@@ -1,5 +1,6 @@
 // Base API configuration
-const API_BASE_URL = 'http://localhost:5000/api';
+// const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL =  'https://clf-backend.intellidt.com/api'
 
 // API client with common configuration
 const apiClient = async (endpoint, options = {}) => {
