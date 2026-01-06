@@ -1,3 +1,15 @@
+.news-empty-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #555;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    margin: 40px 0;
+    text-align: center;
+    width: 100%;
+    grid-column: 1 / -1;
+}
 .news-error-message {
     display: flex;
     justify-content: center;
