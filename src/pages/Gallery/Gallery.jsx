@@ -11,7 +11,7 @@ import { getAllVideos, getPhotosList } from '../../services/ApiServices';
 
 function Gallery() {
     const location = useLocation();
-    
+
     // Determine initial category from URL
     const getCategoryFromPath = useCallback(() => {
         if (location.pathname.includes('/videos')) return 'videos';
@@ -19,8 +19,8 @@ function Gallery() {
         return null;
     }, [location.pathname]);
 
-    const [galleryPhoto, setGalleryPhoto] = useState([])
-    const [galleryVideos, setGalleryVideos] = useState([])
+    const [galleryPhoto, setGalleryPhoto] = useState([]);
+    const [galleryVideos, setGalleryVideos] = useState([]);
     const [mainCategory, setMainCategory] = useState(getCategoryFromPath);
     const [selectedCatalog, setSelectedCatalog] = useState(null);
     const [showAllGalleries, setShowAllGalleries] = useState(false);
@@ -28,21 +28,23 @@ function Gallery() {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [videoLightbox, setVideoLightbox] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [selectedYear, setSelectedYear] = useState()
-     
-    
+    const [selectedYear, setSelectedYear] = useState();
+    const [galleryError, setGalleryError] = useState('');
+    const [videoError, setVideoError] = useState('');
 
     // Fetch photos or videos based on mainCategory
     useEffect(() => {
         if (mainCategory === 'videos') {
             const fetchVideos = async () => {
                 setLoading(true);
+                setVideoError('');
                 const res = await getAllVideos();
                 if (res?.success) {
-                    console.log("res?.data?.data",res?.data?.data)
                     setGalleryVideos(res?.data?.data || []);
+                    setVideoError('');
                 } else {
                     setGalleryVideos([]);
+                    setVideoError(res?.error || 'Failed to fetch videos. Please try again.');
                 }
                 setLoading(false);
             };
@@ -50,9 +52,14 @@ function Gallery() {
         } else {
             const fetchPhotos = async () => {
                 setLoading(true);
+                setGalleryError('');
                 const res = await getPhotosList();
                 if (res?.success) {
-                    setGalleryPhoto(res?.data?.data)
+                    setGalleryPhoto(res?.data?.data);
+                    setGalleryError('');
+                } else {
+                    setGalleryPhoto([]);
+                    setGalleryError(res?.error || 'Failed to fetch photos. Please try again.');
                 }
                 setLoading(false);
             };
@@ -155,30 +162,34 @@ console.log(galleryVideos);
             </section>
 
             <div className="gallery-container">
-                {/* Sidebar Category Filters */}
-                <div className="gallery-sidebar mb-0">
-                    <ul className="sidebar-filters mb-0">
-                        {GALLERY_CATEGORIES.map(category => (
-                            <li
-                                key={category}
-                                className={`sidebar-filter-btn ${mainCategory === category ? 'active' : ''}`}
-                                onClick={() => {
-                                    window.location.href = `/gallery/${category}/`;
-                                }}
-                            >
-                                {category.charAt(0).toUpperCase() + category.slice(1)}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                {/* Sidebar Category Filters - hide if error */}
+                {!(galleryError || videoError) && (
+                    <div className="gallery-sidebar mb-0">
+                        <ul className="sidebar-filters mb-0">
+                            {GALLERY_CATEGORIES.map(category => (
+                                <li
+                                    key={category}
+                                    className={`sidebar-filter-btn ${mainCategory === category ? 'active' : ''}`}
+                                    onClick={() => {
+                                        window.location.href = `/gallery/${category}/`;
+                                    }}
+                                >
+                                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
 
                 {/* Main Content Area */}
                 <div className="gallery-main-content">
                     {/* Videos Section */}
                     {mainCategory === 'videos' && (
                         <div className="videos-section">
-                            {loading ? (
-                                <div>Loading videos...</div>
+                            {videoError ? (
+                                <div className="gallery-error-message news-full-width">{videoError}</div>
+                            ) : galleryVideos.length === 0 ? (
+                                <div className="news-empty-message news-full-width">No Videos Available.</div>
                             ) : (
                                 <>
                                     {/* Featured Video - First Video Large */}
@@ -230,115 +241,123 @@ console.log(galleryVideos);
                     {/* Photos Section */}
                     {(mainCategory === 'photos' || mainCategory === null) && (
                         <div className="photos-section">
-                            {!selectedCatalog && (
-                                <div className="year-tabs">
-                                    <button
-                                        className={`year-tab-btn all-galleries-tab ${showAllGalleries ? 'active' : ''}`}
-                                        onClick={handleAllGalleriesClick}
-                                    >
-                                        All Galleries
-                                    </button>
-                                    {years.slice().reverse().map(year => (
-                                        <button
-                                            key={year}
-                                            className={`year-tab-btn ${selectedYear === year ? 'active' : ''}`}
-                                            onClick={() => handleYearClick(year)}
-                                        >
-                                            {year}
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-
-                            {selectedCatalog && (
-                                <div className="catalog-header">
-                                    <h2 className="catalog-title">
-                                        {galleryPhoto[selectedYear]?.find(cat => cat.title === selectedCatalog)?.title}
-                                    </h2>
-                                </div>
-                            )}
-
-                            {showAllGalleries ? (
-                                <div className="photos-grid ml-10">
-                                    {years.map(year =>
-                                        galleryPhoto[year].map((catalog, catalogIndex) => (
-                                            <div key={`${year}-${catalogIndex}`} className="photo-item-wrapper">
-                                                <div
-                                                    className="photo-item"
-                                                    onClick={() => {
-                                                        setSelectedYear(year);
-                                                        setSelectedCatalog(catalog.title);
-                                                        setShowAllGalleries(false);
-                                                    }}
-                                                    role="button"
-                                                    tabIndex={0}
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === 'Enter') {
-                                                            setSelectedYear(year);
-                                                            setSelectedCatalog(catalog.title);
-                                                            setShowAllGalleries(false);
-                                                        }
-                                                    }}
-                                                >
-                                                    <img src={catalog.catalogThumbnail} alt={catalog.title} />
-                                                    <div className="photo-overlay">
-                                                        <span className="zoom-icon">+</span>
-                                                    </div>
-                                                </div>
-                                                <div className='' style={{ width: 160 }}>
-                                                    <p className="photo-item-title">{catalog.title}</p>
-                                                    {catalog.subTitle && <p className="photo-item-subtitle">{catalog.subTitle}</p>}
-                                                </div>
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            ) : selectedYear && !selectedCatalog ? (
-                                <div className="photos-grid ml-10">
-                                    {galleryPhoto[selectedYear].map((catalog, catalogIndex) => (
-                                        <div key={catalogIndex} className="photo-item-wrapper">
-                                            <div
-                                                className="photo-item"
-                                                onClick={() => handleCatalogClick(catalog.title)}
-                                                role="button"
-                                                tabIndex={0}
-                                                onKeyDown={(e) => e.key === 'Enter' && handleCatalogClick(catalog.title)}
+                            {galleryError ? (
+                                <div className="gallery-error-message news-full-width">{galleryError}</div>
+                            ) : galleryPhoto && Object.keys(galleryPhoto).length === 0 ? (
+                                <div className="news-empty-message news-full-width">No Photos Available.</div>
+                            ) : (
+                                <>
+                                    {!selectedCatalog && (
+                                        <div className="year-tabs">
+                                            <button
+                                                className={`year-tab-btn all-galleries-tab ${showAllGalleries ? 'active' : ''}`}
+                                                onClick={handleAllGalleriesClick}
                                             >
-                                                <img src={catalog.catalogThumbnail} alt={catalog.title} />
-                                                <div className="photo-overlay">
-                                                    <span className="zoom-icon">+</span>
-                                                </div>
-                                            </div>
-                                            <div className='' style={{ width: 160 }}>
-                                                <p className="photo-item-title">{catalog.title}</p>
-                                                {catalog.subTitle && <p className="photo-item-subtitle">{catalog.subTitle}</p>}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : selectedYear && selectedCatalog && (
-                                <div className="photos-grid">
-                                    {galleryPhoto[selectedYear]
-                                        .find(cat => cat.title === selectedCatalog)
-                                        ?.photos.map((photo, index) => (
-                                            <div key={photo.id} className="photo-item-wrapper">
-                                                <div
-                                                    className="photo-item"
-                                                    onClick={() => openLightbox(photo, index)}
-                                                    role="button"
-                                                    tabIndex={0}
-                                                    onKeyDown={(e) => e.key === 'Enter' && openLightbox(photo, index)}
+                                                All Galleries
+                                            </button>
+                                            {years.slice().reverse().map(year => (
+                                                <button
+                                                    key={year}
+                                                    className={`year-tab-btn ${selectedYear === year ? 'active' : ''}`}
+                                                    onClick={() => handleYearClick(year)}
                                                 >
-                                                    <img src={photo.thumbnail} alt={photo.alt} />
-                                                    <div className="photo-overlay">
-                                                        <span className="zoom-icon">+</span>
+                                                    {year}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {selectedCatalog && (
+                                        <div className="catalog-header">
+                                            <h2 className="catalog-title">
+                                                {galleryPhoto[selectedYear]?.find(cat => cat.title === selectedCatalog)?.title}
+                                            </h2>
+                                        </div>
+                                    )}
+
+                                    {showAllGalleries ? (
+                                        <div className="photos-grid ml-10">
+                                            {years.map(year =>
+                                                galleryPhoto[year].map((catalog, catalogIndex) => (
+                                                    <div key={`${year}-${catalogIndex}`} className="photo-item-wrapper">
+                                                        <div
+                                                            className="photo-item"
+                                                            onClick={() => {
+                                                                setSelectedYear(year);
+                                                                setSelectedCatalog(catalog.title);
+                                                                setShowAllGalleries(false);
+                                                            }}
+                                                            role="button"
+                                                            tabIndex={0}
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === 'Enter') {
+                                                                    setSelectedYear(year);
+                                                                    setSelectedCatalog(catalog.title);
+                                                                    setShowAllGalleries(false);
+                                                                }
+                                                            }}
+                                                        >
+                                                            <img src={catalog.catalogThumbnail} alt={catalog.title} />
+                                                            <div className="photo-overlay">
+                                                                <span className="zoom-icon">+</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className='' style={{ width: 160 }}>
+                                                            <p className="photo-item-title">{catalog.title}</p>
+                                                            {catalog.subTitle && <p className="photo-item-subtitle">{catalog.subTitle}</p>}
+                                                        </div>
                                                     </div>
-
+                                                ))
+                                            )}
+                                        </div>
+                                    ) : selectedYear && !selectedCatalog ? (
+                                        <div className="photos-grid ml-10">
+                                            {galleryPhoto[selectedYear].map((catalog, catalogIndex) => (
+                                                <div key={catalogIndex} className="photo-item-wrapper">
+                                                    <div
+                                                        className="photo-item"
+                                                        onClick={() => handleCatalogClick(catalog.title)}
+                                                        role="button"
+                                                        tabIndex={0}
+                                                        onKeyDown={(e) => e.key === 'Enter' && handleCatalogClick(catalog.title)}
+                                                    >
+                                                        <img src={catalog.catalogThumbnail} alt={catalog.title} />
+                                                        <div className="photo-overlay">
+                                                            <span className="zoom-icon">+</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className='' style={{ width: 160 }}>
+                                                        <p className="photo-item-title">{catalog.title}</p>
+                                                        {catalog.subTitle && <p className="photo-item-subtitle">{catalog.subTitle}</p>}
+                                                    </div>
                                                 </div>
+                                            ))}
+                                        </div>
+                                    ) : selectedYear && selectedCatalog && (
+                                        <div className="photos-grid">
+                                            {galleryPhoto[selectedYear]
+                                                .find(cat => cat.title === selectedCatalog)
+                                                ?.photos.map((photo, index) => (
+                                                    <div key={photo.id} className="photo-item-wrapper">
+                                                        <div
+                                                            className="photo-item"
+                                                            onClick={() => openLightbox(photo, index)}
+                                                            role="button"
+                                                            tabIndex={0}
+                                                            onKeyDown={(e) => e.key === 'Enter' && openLightbox(photo, index)}
+                                                        >
+                                                            <img src={photo.thumbnail} alt={photo.alt} />
+                                                            <div className="photo-overlay">
+                                                                <span className="zoom-icon">+</span>
+                                                            </div>
 
-                                            </div>
-                                        ))}
-                                </div>
+                                                        </div>
+
+                                                    </div>
+                                                ))}
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     )}
