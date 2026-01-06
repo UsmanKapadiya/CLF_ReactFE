@@ -230,6 +230,24 @@
 }
 
 
+.news-full-width {
+    width: 100%;
+    grid-column: 1 / -1;
+}
+
+.news-errors-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: 500;
+    border-radius: 8px;
+    margin: 30px 0;
+    text-align: center;
+}
+
+
 
 /* Animations */
 @keyframes fadeIn {

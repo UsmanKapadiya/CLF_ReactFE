@@ -18,7 +18,8 @@ function News() {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [totalPage, setTotalPage] = useState(1);
     const [selectedNews, setSelectedNews] = useState(null);
-    const [newsData, setNewsData] = useState([])
+    const [newsData, setNewsData] = useState([]);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const fetchNews = async () => {
@@ -26,8 +27,10 @@ function News() {
             if (res.success) {
                 setNewsData(res.data?.data || []);
                 setTotalPage(res?.data?.totalpages || 1);
+                setError('');
             } else {
                 setNewsData([]);
+                setError(res.error || 'Failed to fetch news. Please try again.');
             }
         };
         fetchNews();
@@ -145,44 +148,52 @@ function News() {
             <div className="news-container">
                 <div className="news-layout">
                     {/* Left Sidebar - Top 5 Recent News */}
-                    <aside className="news-sidebar" aria-label="Recent news">
-                        <div className="sidebar-category">
-                            <h2 className="sidebar-title">RECENT NEWS</h2>
-                            <nav className="sidebar-list" aria-label="Recent news navigation">
-                                {recentNews.map(renderSidebarItem)}
-                            </nav>
-                        </div>
-                    </aside>
+                    {(!error && newsData.length > 0) && (
+                        <aside className="news-sidebar" aria-label="Recent news">
+                            <div className="sidebar-category">
+                                <h2 className="sidebar-title">RECENT NEWS</h2>
+                                <nav className="sidebar-list" aria-label="Recent news navigation">
+                                    {recentNews.map(renderSidebarItem)}
+                                </nav>
+                            </div>
+                        </aside>
+                    )}
 
                     {/* Main Content */}
-                    <main className="news-content">
-                        {selectedNews ? (
-                            <article className="news-detail">
-                                <h1 className="news-item-title">
-                                    {selectedNews.title}
-                                </h1>
-                                <time className="news-item-date" dateTime={selectedNews.date}>
-                                    {selectedNews.date}
-                                </time>
-                                <div
-                                    className="news-detail-description"
-                                    dangerouslySetInnerHTML={{ __html: selectedNews.description }}
-                                />
-                            </article>
-                        ) : (
-                            <>
-                                <div className="news-list">
-                                    {currentNews.map(renderNewsItem)}
-                                </div>
+                    {error ? (
+                        <div className="news-errors-message news-full-width">{error}</div>
+                    ) : newsData.length === 0 ? (
+                        <div className="news-empty-message news-full-width" style={{ color: '#555', textAlign: 'center', margin: '40px 0', fontSize: '1.1rem' }}>No news found.</div>
+                    ) : (
+                        <main className="news-content">
+                            {selectedNews ? (
+                                <article className="news-detail">
+                                    <h1 className="news-item-title">
+                                        {selectedNews.title}
+                                    </h1>
+                                    <time className="news-item-date" dateTime={selectedNews.date}>
+                                        {selectedNews.date}
+                                    </time>
+                                    <div
+                                        className="news-detail-description"
+                                        dangerouslySetInnerHTML={{ __html: selectedNews.description }}
+                                    />
+                                </article>
+                            ) : (
+                                <>
+                                    <div className="news-list">
+                                        {currentNews.map(renderNewsItem)}
+                                    </div>
 
-                                <Pagination
-                                    currentPage={currentPage}
-                                    totalPages={totalPages}
-                                    onPageChange={handlePageChange}
-                                />
-                            </>
-                        )}
-                    </main>
+                                    <Pagination
+                                        currentPage={currentPage}
+                                        totalPages={totalPages}
+                                        onPageChange={handlePageChange}
+                                    />
+                                </>
+                            )}
+                        </main>
+                    )}
                 </div>
             </div>
         </div>
