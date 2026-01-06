@@ -5,7 +5,7 @@ import './NewsCarousel.css';
 
 const TRUNCATE_LENGTH = 300;
 
-function NewsCarousel({ newsData }) {
+function NewsCarousel({ newsData, error }) {
         // Helper to format date for URL
         const formatDateToUrl = useCallback((dateString) => {
             const date = new Date(dateString);
@@ -50,6 +50,20 @@ function NewsCarousel({ newsData }) {
         return `${plainText.substring(0, maxLength).trim()}[...]`;
     }, []);
 
+    if (error) {
+        return (
+            <div className="news-carousel">
+                <div className="news-header">
+                    <h2>
+                        <span className="underline-text">LAT</span>EST NEWS
+                    </h2>
+                </div>
+                <div className="news-error-message">
+                    <p>{error}</p>
+                </div>
+            </div>
+        );
+    }
     if (!sortedNews || sortedNews.length === 0) {
         return (
             <div className="news-carousel">
@@ -146,7 +160,8 @@ NewsCarousel.propTypes = {
             description: PropTypes.string.isRequired,
             date: PropTypes.string.isRequired
         })
-    )
+    ),
+    error: PropTypes.string
 };
 
 export default NewsCarousel;

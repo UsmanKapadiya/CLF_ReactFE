@@ -7,18 +7,21 @@ import MetaTitle from '../../components/MetaTags/MetaTags';
 import { useEffect, useState } from 'react';
 import { getAllNews } from '../../services/ApiServices';
 
+
 function Home() {
   const [recentNews, setRecentNews] = useState([]);
   const [page, setPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchNews = async () => {
       const res = await getAllNews(page, itemsPerPage)
       if (res.success) {
         setRecentNews(res.data?.data || []);
+        setError('');
       } else {
-        setError(res.error || 'Failed to fetch news');
+        setError(res.error || 'Failed to fetch news. Please try again.');
       }
     };
     fetchNews();
@@ -42,7 +45,7 @@ function Home() {
       </section>
 
       <section className="container-fluid home_post_back" aria-label="Latest news section">
-        <NewsCarousel newsData={recentNews} />
+        <NewsCarousel newsData={recentNews} error={error} />
       </section>
 
       <section className="three-column-grid" aria-label="Training locations">

@@ -1,3 +1,14 @@
+.news-error-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff3f3;
+    font-size: 1.2rem;
+    font-weight: 500;
+    border-radius: 8px;
+    margin: 30px 0;
+    text-align: center;
+}
 .news-carousel {
     max-width: 960px;
     margin: 0 auto;
