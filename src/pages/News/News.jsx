@@ -6,10 +6,18 @@ import Title from '../../assets/news_title.png';
 import Pagination from '../../components/Pagination/Pagination';
 import MetaTitle from '../../components/MetaTags/MetaTags';
 import { getAllNews } from '../../services/ApiServices';
+import ContentRender from '../../components/ContentRender/ContentRender';
+
+
 
 // const ITEMS_PER_PAGE = 1;
 const RECENT_NEWS_COUNT = 5;
-const TRUNCATE_LENGTH = 300;
+const newsDateFormatter = new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+});
 
 function News() {
     const navigate = useNavigate();
@@ -35,7 +43,7 @@ function News() {
         };
         fetchNews();
     }, [currentPage, itemsPerPage]);
-    
+
     // Sort news by date (most recent first) - memoized
     const sortedNews = useMemo(
         () => [...newsData].sort((a, b) => new Date(b.date) - new Date(a.date)),
@@ -61,12 +69,28 @@ function News() {
         };
     }, []);
 
-    // Strip HTML tags and truncate description - useCallback for stable reference
-    const truncateText = useCallback((text, maxLength = TRUNCATE_LENGTH) => {
-        // Remove HTML tags
-        const plainText = text.replace(/<[^>]*>/g, '');
-        if (plainText.length <= maxLength) return plainText;
-        return `${plainText.substring(0, maxLength).trim()}[...]`;
+    const formatNewsDate = (dateString) => {
+        const date = new Date(dateString);
+        return Number.isNaN(date.getTime()) ? dateString : newsDateFormatter.format(date);
+    };
+
+    // Decode escaped markup, then return its text without HTML tags.
+    const stripHtmlTags = useCallback((text = '') => {
+        let html = String(text ?? '');
+
+        while (/&lt;\s*\/?\s*[a-z][^&]*?&gt;/i.test(html)) {
+            html = new DOMParser().parseFromString(html, 'text/html').body.textContent || '';
+        }
+
+        const textWithSpacing = html
+            .replace(/<br\b[^>]*>/gi, ' ')
+            .replace(/<\/[^>]+>/g, ' ');
+
+        return new DOMParser()
+            .parseFromString(textWithSpacing, 'text/html')
+            .body.textContent
+            .replace(/\s+/g, ' ')
+            .trim();
     }, []);
 
     // Handle page change - useCallback for stable reference
@@ -121,10 +145,10 @@ function News() {
                 {news.title}
             </h2>
             <time className="news-item-date" dateTime={news.date}>
-                {news.date}
+                {formatNewsDate(news.date)}
             </time>
             <p className="news-item-description">
-                {truncateText(news.description)}
+                {stripHtmlTags(news.description)}
             </p>
             <a
                 className="read-more-link"
@@ -136,7 +160,7 @@ function News() {
                 Read More »
             </a>
         </article>
-    ), [handleReadMore, truncateText]);
+    ), [handleReadMore, stripHtmlTags]);
 
     return (
         <div className="news-page">
@@ -172,11 +196,13 @@ function News() {
                                         {selectedNews.title}
                                     </h1>
                                     <time className="news-item-date" dateTime={selectedNews.date}>
-                                        {selectedNews.date}
+                                        {formatNewsDate(selectedNews.date)}
                                     </time>
                                     <div
-                                        className="news-detail-description"
-                                        dangerouslySetInnerHTML={{ __html: selectedNews.description }}
+                                        className="content-description"
+                                        dangerouslySetInnerHTML={{
+                                            __html: ContentRender(selectedNews.description),
+                                        }}
                                     />
                                 </article>
                             ) : (

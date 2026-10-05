@@ -5,6 +5,24 @@ import './NewsCarousel.css';
 
 const TRUNCATE_LENGTH = 300;
 
+const stripHtmlTags = (text = '') => {
+    let html = String(text ?? '');
+
+    while (/&lt;\s*\/?\s*[a-z](?:\s|&gt;|>)/i.test(html)) {
+        html = new DOMParser().parseFromString(html, 'text/html').body.textContent || '';
+    }
+
+    const textWithSpacing = html
+        .replace(/<br\b[^>]*>/gi, ' ')
+        .replace(/<\/[^>]+>/g, ' ');
+
+    return new DOMParser()
+        .parseFromString(textWithSpacing, 'text/html')
+        .body.textContent
+        .replace(/\s+/g, ' ')
+        .trim();
+};
+
 function NewsCarousel({ newsData, error }) {
         // Helper to format date for URL
         const formatDateToUrl = useCallback((dateString) => {
@@ -43,12 +61,13 @@ function NewsCarousel({ newsData, error }) {
         sortedNews[(currentIndex + 1) % sortedNews.length]
     ], [currentIndex, sortedNews]);
 
-    const truncateText = useCallback((text, maxLength = TRUNCATE_LENGTH) => {
-        // Remove HTML tags
-        const plainText = text.replace(/<[^>]*>/g, '');
+    const truncateText = useCallback((text = '', maxLength = TRUNCATE_LENGTH) => {
+        const plainText = String(text ?? '');
         if (plainText.length <= maxLength) return plainText;
         return `${plainText.substring(0, maxLength).trim()}[...]`;
     }, []);
+
+    
 
     if (error) {
         return (
@@ -126,12 +145,8 @@ function NewsCarousel({ newsData, error }) {
                         </div>
                         <div className="news-content">
                             <p className="news-item-description">
-                                {truncateText(news?.description)}
+                                {truncateText(stripHtmlTags(news?.description))}
                             </p>
-                            {/* <div
-                                className="news-detail-description"
-                                dangerouslySetInnerHTML={{ __html: news.description }}
-                            /> */}
                         </div>
                         <div className="news-footer">
                             <a

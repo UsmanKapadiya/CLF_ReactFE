@@ -1,6 +1,14 @@
 // Base API configuration
 // const API_BASE_URL = 'http://localhost:5000/api';
-const API_BASE_URL =  'https://clf-backend.intellidt.com/api'
+const API_BASE_URL =  'https://backend.clf.intellimanagement.com/api'
+
+
+export const resolveMediaUrl = (path) => {
+  if (!path) return '';
+
+  const backendOrigin = new URL(API_BASE_URL, window.location.origin).origin;
+  return new URL(path, `${backendOrigin}/`).href;
+};
 
 // API client with common configuration
 const apiClient = async (endpoint, options = {}) => {

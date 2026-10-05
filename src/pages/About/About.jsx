@@ -4,6 +4,7 @@ import Title from '../../assets/About.png';
 import AboutBanner from "../../assets/aboutBanner.png"
 import MetaTitle from '../../components/MetaTags/MetaTags';
 import { getAboutList } from '../../services/ApiServices';
+import ContentRender from '../../components/ContentRender/ContentRender';
 
 function About() {
     const [selectedItem, setSelectedItem] = useState(null);
@@ -117,10 +118,11 @@ function About() {
                                 }}>
                                     {selectedItem.category.toUpperCase()} qws
                                 </div> */}
-                                <h2 className="content-title">{selectedItem.title}</h2>
                                 <div
                                     className="content-description"
-                                    dangerouslySetInnerHTML={{ __html: selectedItem.description }}
+                                    dangerouslySetInnerHTML={{
+                                        __html: ContentRender(selectedItem.description),
+                                    }}
                                 />
                             </div>
                         ) : (

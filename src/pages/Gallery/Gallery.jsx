@@ -8,7 +8,9 @@ import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import { GALLERY_CATEGORIES } from '../../constants/galleryData';
 import MetaTitle from '../../components/MetaTags/MetaTags';
 import { getAllVideos, getPhotosList } from '../../services/ApiServices';
+import { resolveMediaUrl } from '../../services/api';
 
+console.log("test",resolveMediaUrl);
 function Gallery() {
     const location = useLocation();
 
@@ -202,7 +204,7 @@ console.log(galleryVideos);
                                                 tabIndex={0}
                                                 onKeyDown={(e) => e.key === 'Enter' && handleVideoPlay(galleryVideos[0])}
                                             >
-                                                <img src={galleryVideos[0].catalogThumbnail || galleryVideos[0].thumbnail} alt={galleryVideos[0].title} />
+                                                <img src={resolveMediaUrl(galleryVideos[0].catalogThumbnail || galleryVideos[0].thumbnail)} alt={galleryVideos[0].title} />
                                                 <div className="video-overlay">
                                                     <span className="play-icon">▶</span>
                                                 </div>
@@ -221,7 +223,7 @@ console.log(galleryVideos);
                                                         tabIndex={0}
                                                         onKeyDown={(e) => e.key === 'Enter' && handleVideoPlay(video)}
                                                     >
-                                                        <img src={video.catalogThumbnail || video.thumbnail} alt={video.title} />
+                                                        <img src={resolveMediaUrl(video.catalogThumbnail || video.thumbnail)} alt={video.title} />
                                                         <div className="video-overlay">
                                                             <span className="play-icon">▶</span>
                                                         </div>
@@ -297,7 +299,11 @@ console.log(galleryVideos);
                                                                 }
                                                             }}
                                                         >
-                                                            <img src={catalog.catalogThumbnail} alt={catalog.title} />
+                                                            <img                                                         
+                                                                src={resolveMediaUrl(catalog.catalogThumbnail)}
+                                                                alt={catalog.title}
+                                                                loading="lazy"    
+                                                            />
                                                             <div className="photo-overlay">
                                                                 <span className="zoom-icon">+</span>
                                                             </div>
@@ -321,7 +327,11 @@ console.log(galleryVideos);
                                                         tabIndex={0}
                                                         onKeyDown={(e) => e.key === 'Enter' && handleCatalogClick(catalog.title)}
                                                     >
-                                                        <img src={catalog.catalogThumbnail} alt={catalog.title} />
+                                                        <img 
+                                                            src={resolveMediaUrl(catalog.catalogThumbnail)} 
+                                                            alt={catalog.title}
+                                                            loading="lazy"                            
+                                                        />
                                                         <div className="photo-overlay">
                                                             <span className="zoom-icon">+</span>
                                                         </div>
@@ -346,7 +356,11 @@ console.log(galleryVideos);
                                                             tabIndex={0}
                                                             onKeyDown={(e) => e.key === 'Enter' && openLightbox(photo, index)}
                                                         >
-                                                            <img src={photo.thumbnail} alt={photo.alt} />
+                                                            <img 
+                                                                src={resolveMediaUrl(photo.src)} 
+                                                                alt={photo._id}
+                                                                loading="lazy"                            
+                                                            />
                                                             <div className="photo-overlay">
                                                                 <span className="zoom-icon">+</span>
                                                             </div>
@@ -381,7 +395,7 @@ console.log(galleryVideos);
                         />
                         <div className="lightbox-image-wrapper">
                             <img
-                                src={lightboxImage.src}
+                                src={resolveMediaUrl(lightboxImage.src)}
                                 alt={lightboxImage.alt}
                             />
                         </div>
@@ -428,7 +442,7 @@ console.log(galleryVideos);
                         />
                         <div className="video-lightbox-wrapper">
                             <iframe
-                                src={videoLightbox.videoUrl}
+                                src={resolveMediaUrl(videoLightbox.videoUrl)}
                                 title={videoLightbox.title}
                                 frameBorder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
