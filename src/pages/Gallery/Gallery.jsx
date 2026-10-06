@@ -307,7 +307,7 @@ console.log(galleryVideos);
                                                                 <span className="zoom-icon">+</span>
                                                             </div>
                                                         </div>
-                                                        <div className='' style={{ width: 160 }}>
+                                                        <div className='' style={{ width: 220 }}>
                                                             <p className="photo-item-title">{catalog.title}</p>
                                                             {catalog.subTitle && <p className="photo-item-subtitle">{catalog.subTitle}</p>}
                                                         </div>
@@ -335,7 +335,7 @@ console.log(galleryVideos);
                                                             <span className="zoom-icon">+</span>
                                                         </div>
                                                     </div>
-                                                    <div className='' style={{ width: 160 }}>
+                                                    <div className='' style={{ width: 220 }}>
                                                         <p className="photo-item-title">{catalog.title}</p>
                                                         {catalog.subTitle && <p className="photo-item-subtitle">{catalog.subTitle}</p>}
                                                     </div>
@@ -343,13 +343,13 @@ console.log(galleryVideos);
                                             ))}
                                         </div>
                                     ) : selectedYear && selectedCatalog && (
-                                        <div className="photos-grid">
+                                        <div className="photos-grid catalog-photos-grid">
                                             {galleryPhoto[selectedYear]
                                                 .find(cat => cat.title === selectedCatalog)
                                                 ?.photos.map((photo, index) => (
-                                                    <div key={photo._id} className="photo-item-wrapper">
+                                                    <div key={photo._id} className="photo-item-wrapper catalog-photo-item-wrapper">
                                                         <div
-                                                            className="photo-item"
+                                                            className="photo-item catalog-photo-item"
                                                             onClick={() => openLightbox(photo, index)}
                                                             role="button"
                                                             tabIndex={0}
