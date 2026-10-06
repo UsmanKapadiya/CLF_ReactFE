@@ -8,7 +8,7 @@ import ContentRender from '../../components/ContentRender/ContentRender';
 
 function About() {
     const [selectedItem, setSelectedItem] = useState(null);
-    const [aboutData, setAboutData] = useState([{}]);
+    const [aboutData, setAboutData] = useState([]);
 
     // Fetch about list on mount
     useEffect(() => {
@@ -27,7 +27,11 @@ function About() {
 
     // Get unique categories from data in specified order
     const categories = useMemo(() => {
-        const uniqueCategories = [...new Set((aboutData || []).map(item => item.category))];
+        const uniqueCategories = [...new Set(
+            (aboutData || [])
+                .map(item => item.category)
+                .filter(category => category != null)
+        )];
         // Sort by predefined order, then alphabetically for any other categories
         return uniqueCategories.sort((a, b) => {
             const indexA = orderedCategories.indexOf(a);
@@ -57,7 +61,7 @@ function About() {
         const parents = getParentItems(data);
         return parents.map(parent => {
             return (
-                <div key={parent.id} className="sidebar-section">
+                <div key={parent._id ?? parent.id} className="sidebar-section">
                     <div
                         className={`sidebar-item parent ${selectedItem?.id === parent.id ? 'active' : ''}`}
                         onClick={() => setSelectedItem(parent)}
@@ -68,7 +72,7 @@ function About() {
                         <div className="sidebar-children">
                             {parent?.children.map(child => (
                                 <div
-                                    key={child.id}
+                                    key={child._id ?? child.id}
                                     className={`sidebar-item child ${selectedItem?.id === child.id ? 'active' : ''}`}
                                     onClick={() => setSelectedItem(child)}
                                 >

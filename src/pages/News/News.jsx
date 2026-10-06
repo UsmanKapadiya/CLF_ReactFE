@@ -127,7 +127,7 @@ function News() {
 
     // Render sidebar item
     const renderSidebarItem = useCallback((news) => (
-        <div key={news.id} className="sidebar-section">
+        <div key={news._id} className="sidebar-section">
             <div
                 className="sidebar-item"
                 onClick={() => handleReadMore(news)}
@@ -142,7 +142,7 @@ function News() {
 
     // Render news item in list
     const renderNewsItem = useCallback((news) => (
-        <article key={news.id} className="news-item">
+        <article key={news._id} className="news-item">
             <h2
                 className="news-item-title"
                 onClick={() => handleReadMore(news)}
