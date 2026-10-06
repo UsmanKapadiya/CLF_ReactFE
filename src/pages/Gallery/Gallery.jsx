@@ -139,7 +139,6 @@ function Gallery() {
 
     const handleCatalogClick = useCallback((catalogTitle) => {
         setSelectedCatalog(catalogTitle);
-        setMainCategory(null);
     }, []);
 
     const handleVideoPlay = useCallback((video) => {
@@ -348,7 +347,7 @@ console.log(galleryVideos);
                                             {galleryPhoto[selectedYear]
                                                 .find(cat => cat.title === selectedCatalog)
                                                 ?.photos.map((photo, index) => (
-                                                    <div key={photo.id} className="photo-item-wrapper">
+                                                    <div key={photo._id} className="photo-item-wrapper">
                                                         <div
                                                             className="photo-item"
                                                             onClick={() => openLightbox(photo, index)}
