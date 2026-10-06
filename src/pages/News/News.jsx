@@ -28,6 +28,8 @@ function News() {
     const [selectedNews, setSelectedNews] = useState(null);
     const [newsData, setNewsData] = useState([]);
     const [error, setError] = useState('');
+    const TRUNCATE_LENGTH = 300;
+
 
     useEffect(() => {
         const fetchNews = async () => {
@@ -93,6 +95,12 @@ function News() {
             .trim();
     }, []);
 
+    const truncateText = useCallback((text = '', maxLength = TRUNCATE_LENGTH) => {
+        const plainText = String(text ?? '');
+        if (plainText.length <= maxLength) return plainText;
+        return `${plainText.substring(0, maxLength).trim()}[...]`;
+    }, []);
+
     // Handle page change - useCallback for stable reference
     const handlePageChange = useCallback((page) => {
         setCurrentPage(page);
@@ -148,7 +156,7 @@ function News() {
                 {formatNewsDate(news.date)}
             </time>
             <p className="news-item-description">
-                {stripHtmlTags(news.description)}
+                {truncateText(stripHtmlTags(news.description))}
             </p>
             <a
                 className="read-more-link"
