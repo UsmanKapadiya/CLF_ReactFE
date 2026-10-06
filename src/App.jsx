@@ -7,6 +7,7 @@ import About from './pages/About/About'
 import Contact from './pages/Contact/Contact'
 import Gallery from './pages/Gallery/Gallery'
 import News from './pages/News/News'
+import NotFound from './pages/NotFound/NotFound'
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
             <Route path="/gallery/videos/" element={<Gallery />} />
             <Route path="/news" element={<News />} />
             <Route path="/news/:year/:month/:day/:slug" element={<News />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />
