@@ -27,6 +27,8 @@ function News() {
     const [totalPage, setTotalPage] = useState(1);
     const [selectedNews, setSelectedNews] = useState(null);
     const [newsData, setNewsData] = useState([]);
+    const [recentNews, setRecentNews] = useState([]);
+    const [recentNewsError, setRecentNewsError] = useState('');
     const [error, setError] = useState('');
     const TRUNCATE_LENGTH = 300;
 
@@ -46,16 +48,27 @@ function News() {
         fetchNews();
     }, [currentPage, itemsPerPage]);
 
+    useEffect(() => {
+        const fetchRecentNews = async () => {
+            const res = await getAllNews(1, RECENT_NEWS_COUNT);
+            if (res.success) {
+                const latestNews = [...(res.data?.data || [])]
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .slice(0, RECENT_NEWS_COUNT);
+                setRecentNews(latestNews);
+                setRecentNewsError('');
+            } else {
+                setRecentNews([]);
+                setRecentNewsError(res.error || 'Failed to load recent news.');
+            }
+        };
+        fetchRecentNews();
+    }, []);
+
     // Sort news by date (most recent first) - memoized
     const sortedNews = useMemo(
         () => [...newsData].sort((a, b) => new Date(b.date) - new Date(a.date)),
         [newsData]
-    );
-
-    // Get top 5 news for sidebar - memoized
-    const recentNews = useMemo(
-        () => sortedNews.slice(0, RECENT_NEWS_COUNT),
-        [sortedNews]
     );
 
     // Use API's totalpages for pagination
@@ -180,16 +193,18 @@ function News() {
             <div className="news-container">
                 <div className="news-layout">
                     {/* Left Sidebar - Top 5 Recent News */}
-                    {(!error && newsData.length > 0) && (
-                        <aside className="news-sidebar" aria-label="Recent news">
-                            <div className="sidebar-category">
-                                <h2 className="sidebar-title">RECENT NEWS</h2>
-                                <nav className="sidebar-list" aria-label="Recent news navigation">
-                                    {recentNews.map(renderSidebarItem)}
-                                </nav>
-                            </div>
-                        </aside>
-                    )}
+                    <aside className="news-sidebar" aria-label="Recent news">
+                        <div className="sidebar-category">
+                            <h2 className="sidebar-title">RECENT NEWS</h2>
+                            <nav className="sidebar-list" aria-label="Recent news navigation">
+                                {recentNewsError ? (
+                                    <p className="news-errors-message">{recentNewsError}</p>
+                                ) : (
+                                    recentNews.map(renderSidebarItem)
+                                )}
+                            </nav>
+                        </div>
+                    </aside>
 
                     {/* Main Content */}
                     {error ? (
