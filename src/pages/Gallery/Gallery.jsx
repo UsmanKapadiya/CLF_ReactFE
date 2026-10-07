@@ -10,7 +10,6 @@ import MetaTitle from '../../components/MetaTags/MetaTags';
 import { getAllVideos, getPhotosList } from '../../services/ApiServices';
 import { resolveMediaUrl } from '../../services/api';
 
-console.log("test",resolveMediaUrl);
 function Gallery() {
     const location = useLocation();
 
@@ -154,7 +153,7 @@ function Gallery() {
         if (mainCategory === 'videos') return 'Videos | 振江武術館';
         return 'Gallery振江武術館';
     };
-console.log(galleryVideos);
+
     return (
         <div className="gallery-page">
             <MetaTitle pageTitle={getGalleryTitle()} />
