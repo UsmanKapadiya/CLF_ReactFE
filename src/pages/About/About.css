@@ -197,6 +197,16 @@
     margin-bottom: 0;
 }
 
+/* Photos in the content open in the lightbox */
+.content-description img {
+    cursor: zoom-in;
+    transition: opacity 0.2s ease;
+}
+
+.content-description img:hover {
+    opacity: 0.85;
+}
+
 
 .content-description h2 {
     font-size: 24px;

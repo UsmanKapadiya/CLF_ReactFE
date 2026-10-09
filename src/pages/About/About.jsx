@@ -1,14 +1,40 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import './About.css';
 import Title from '../../assets/About.png';
 import AboutBanner from "../../assets/aboutBanner.png"
 import MetaTitle from '../../components/MetaTags/MetaTags';
 import { getAboutList } from '../../services/ApiServices';
 import ContentRender from '../../components/ContentRender/ContentRender';
+import PhotoLightbox from '../../components/PhotoLightbox/PhotoLightbox';
+
+const IMAGE_LINK = /\.(jpe?g|png|gif|webp|avif|bmp)(\?.*)?$/i;
 
 function About() {
     const [selectedItem, setSelectedItem] = useState(null);
     const [aboutData, setAboutData] = useState([]);
+    const [lightboxImages, setLightboxImages] = useState([]);
+    const [lightboxIndex, setLightboxIndex] = useState(null);
+
+    const handleContentClick = useCallback((e) => {
+        const opensInLightbox = (img) => {
+            const link = img.closest('a');
+            return !link || IMAGE_LINK.test(link.getAttribute('href') || '');
+        };
+        const clicked = e.target.closest('img');
+        if (!clicked || !e.currentTarget.contains(clicked) || !opensInLightbox(clicked)) return;
+        e.preventDefault(); // don't follow the "enlarge" link to the raw image file
+        const imgs = Array.from(e.currentTarget.querySelectorAll('img')).filter(opensInLightbox);
+        setLightboxImages(imgs.map((img) => {
+            const link = img.closest('a');
+            const big = link && IMAGE_LINK.test(link.getAttribute('href') || '') ? link.href : null;
+            return { src: big || img.currentSrc || img.src, alt: img.alt || '' };
+        }));
+        setLightboxIndex(imgs.indexOf(clicked));
+    }, []);
+
+    useEffect(() => {
+        setLightboxIndex(null);
+    }, [selectedItem]);
 
     // Fetch about list on mount
     useEffect(() => {
@@ -124,6 +150,7 @@ function About() {
                                 </div> */}
                                 <div
                                     className="content-description"
+                                    onClick={handleContentClick}
                                     dangerouslySetInnerHTML={{
                                         __html: ContentRender(selectedItem.description),
                                     }}
@@ -138,6 +165,12 @@ function About() {
                     </main>
                 </div>
             </div>
+
+            <PhotoLightbox
+                images={lightboxImages}
+                index={lightboxIndex}
+                onIndexChange={setLightboxIndex}
+            />
         </div>
     );
 }

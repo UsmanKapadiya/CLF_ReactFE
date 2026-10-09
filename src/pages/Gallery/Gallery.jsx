@@ -1,14 +1,11 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import './Gallery.css';
 import Title from '../../assets/title.png';
 import CancelIcon from '@mui/icons-material/Cancel';
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
-import OpenInFullIcon from '@mui/icons-material/OpenInFull';
-import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import { GALLERY_CATEGORIES } from '../../constants/galleryData';
 import MetaTitle from '../../components/MetaTags/MetaTags';
+import PhotoLightbox from '../../components/PhotoLightbox/PhotoLightbox';
 import { getAllVideos, getPhotosList } from '../../services/ApiServices';
 import { resolveMediaUrl } from '../../services/api';
 
@@ -27,13 +24,7 @@ function Gallery() {
     const [mainCategory, setMainCategory] = useState(getCategoryFromPath);
     const [selectedCatalog, setSelectedCatalog] = useState(null);
     const [showAllGalleries, setShowAllGalleries] = useState(false);
-    const [lightboxImage, setLightboxImage] = useState(null);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    // Expand button: enlarges the fitted photo by EXPAND_FACTOR (never beyond its real size)
-    const [lightboxExpanded, setLightboxExpanded] = useState(false);
-    const [expandedSize, setExpandedSize] = useState(null);
-    const [canExpand, setCanExpand] = useState(false);
-    const lightboxImgRef = useRef(null);
+    const [lightboxIndex, setLightboxIndex] = useState(null); // index of the open photo, null = closed
     const [videoLightbox, setVideoLightbox] = useState(null);
     const [loading, setLoading] = useState(false);
     const [selectedYear, setSelectedYear] = useState();
@@ -95,83 +86,16 @@ function Gallery() {
         }
     }, [location.pathname, getCategoryFromPath, years]);
 
+    // Photos of the open album, ready for the shared lightbox
+    const lightboxImages = useMemo(() => {
+        const catalog = galleryPhoto?.[selectedYear]?.find?.(cat => cat.title === selectedCatalog);
+        return (catalog?.photos || []).map(photo => ({ src: resolveMediaUrl(photo.src), alt: photo.alt || '' }));
+    }, [galleryPhoto, selectedYear, selectedCatalog]);
+
     // Event handlers - memoized for performance
     const openLightbox = useCallback((image, index) => {
-        setLightboxImage(image);
-        setCurrentImageIndex(index);
+        setLightboxIndex(index);
     }, []);
-
-    const closeLightbox = useCallback(() => {
-        setLightboxImage(null);
-    }, []);
-
-    const navigateLightbox = useCallback((direction) => {
-        if (!selectedYear || !selectedCatalog) return;
-
-        const yearData = galleryPhoto[selectedYear];
-        const catalog = yearData.find(cat => cat.title === selectedCatalog);
-        if (!catalog) return;
-
-        const yearPhotos = catalog.photos;
-        const newIndex = direction === 'next'
-            ? (currentImageIndex + 1) % yearPhotos.length
-            : (currentImageIndex - 1 + yearPhotos.length) % yearPhotos.length;
-
-        setCurrentImageIndex(newIndex);
-        setLightboxImage(yearPhotos[newIndex]);
-    }, [galleryPhoto, selectedYear, selectedCatalog, currentImageIndex]);
-
-    const handleKeyDown = useCallback((e) => {
-        if (e.key === 'Escape') {
-            closeLightbox();
-        } else if (e.key === 'ArrowRight') {
-            navigateLightbox('next');
-        } else if (e.key === 'ArrowLeft') {
-            navigateLightbox('prev');
-        }
-    }, [closeLightbox, navigateLightbox]);
-
-    // A new photo always opens fitted to the window
-    useEffect(() => {
-        setLightboxExpanded(false);
-        setExpandedSize(null);
-        setCanExpand(false);
-    }, [lightboxImage]);
-
-    const expandLightbox = useCallback(() => {
-        const img = lightboxImgRef.current;
-        if (!img) return;
-        const EXPAND_FACTOR = 1.15; // 15% larger than the fitted size
-        const width = Math.min(img.naturalWidth, Math.round(img.clientWidth * EXPAND_FACTOR));
-        const height = Math.round(width * (img.naturalHeight / img.naturalWidth));
-        setExpandedSize({ width, height });
-        setLightboxExpanded(true);
-    }, []);
-
-    const fitLightbox = useCallback(() => {
-        setLightboxExpanded(false);
-        setExpandedSize(null);
-    }, []);
-
-    // Is the photo shown smaller than its real size? Then offer the expand button.
-    const checkCanExpand = useCallback(() => {
-        const img = lightboxImgRef.current;
-        if (!img || !img.naturalWidth) return;
-        setCanExpand(img.naturalWidth > img.clientWidth + 1 || img.naturalHeight > img.clientHeight + 1);
-    }, []);
-
-    useEffect(() => {
-        if (!lightboxImage || lightboxExpanded) return undefined;
-        window.addEventListener('resize', checkCanExpand);
-        return () => window.removeEventListener('resize', checkCanExpand);
-    }, [lightboxImage, lightboxExpanded, checkCanExpand]);
-
-    // Keyboard: Esc closes, ← / → change photo while the lightbox is open
-    useEffect(() => {
-        if (!lightboxImage) return undefined;
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [lightboxImage, handleKeyDown]);
 
     const handleYearClick = useCallback((year) => {
         setSelectedYear(year);
@@ -425,89 +349,12 @@ function Gallery() {
                 </div>
             </div>
 
-            {/* Lightbox */}
-            {lightboxImage && (
-                <div
-                    className={`lightbox-overlay ${lightboxExpanded ? 'is-expanded' : ''}`}
-                    onClick={closeLightbox}
-                    role="dialog"
-                    aria-modal="true"
-                >
-                    <div className="lightbox-container" onClick={(e) => e.stopPropagation()}>
-                        {(canExpand || lightboxExpanded) && (lightboxExpanded ? (
-                            <CloseFullscreenIcon
-                                className="lightbox-expand"
-                                onClick={fitLightbox}
-                                aria-label="Fit image to window"
-                                titleAccess="Fit to window"
-                            />
-                        ) : (
-                            <OpenInFullIcon
-                                className="lightbox-expand"
-                                onClick={expandLightbox}
-                                aria-label="Show image at full size"
-                                titleAccess="Expand the image"
-                            />
-                        ))}
-                        <CancelIcon
-                            className="lightbox-close"
-                            onClick={closeLightbox}
-                            aria-label="Close lightbox"
-                        />
-                        <div className="lightbox-image-wrapper">
-                            <div className="lightbox-image-holder">
-                                <img
-                                    ref={lightboxImgRef}
-                                    src={resolveMediaUrl(lightboxImage.src)}
-                                    alt={lightboxImage.alt}
-                                    style={lightboxExpanded && expandedSize ? { width: expandedSize.width, height: expandedSize.height } : undefined}
-                                    onLoad={checkCanExpand}
-                                />
-                                {/* Hover the left / right half of the photo to show the previous / next arrow */}
-                                <button
-                                    type="button"
-                                    className="lightbox-hover-nav lightbox-hover-prev"
-                                    onClick={() => navigateLightbox('prev')}
-                                    aria-label="Previous image"
-                                >
-                                    <ArrowCircleLeftIcon className="lightbox-hover-icon" />
-                                </button>
-                                <button
-                                    type="button"
-                                    className="lightbox-hover-nav lightbox-hover-next"
-                                    onClick={() => navigateLightbox('next')}
-                                    aria-label="Next image"
-                                >
-                                    <ArrowCircleRightIcon className="lightbox-hover-icon" />
-                                </button>
-                            </div>
-                        </div>
-                        <div className="lightbox-controls">
-                            <ArrowCircleLeftIcon
-                                className="lightbox-nav lightbox-prev"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigateLightbox('prev');
-                                }}
-                                aria-label="Previous image"
-                            />
-                            <span className="lightbox-counter">
-                                {currentImageIndex + 1} / {galleryPhoto[selectedYear]?.find(cat => cat.title === selectedCatalog)?.photos.length || 0}
-                            </span>
-                            <ArrowCircleRightIcon
-                                className="lightbox-nav lightbox-next"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigateLightbox('next');
-                                }}
-                                aria-label="Next image"
-                            />
-                        </div>
-
-
-                    </div>
-                </div>
-            )}
+            {/* Lightbox (shared with the About page) */}
+            <PhotoLightbox
+                images={lightboxImages}
+                index={lightboxIndex}
+                onIndexChange={setLightboxIndex}
+            />
 
             {/* Video Lightbox */}
             {videoLightbox && (
