@@ -770,9 +770,14 @@
     }
 }
 
+/* Same behaviour as prettyPhoto on the original site: the photo opens at its real size
+   (e.g. 1024 x 683) inside a white frame with 20px padding, and only shrinks when the
+   browser window is smaller than the photo. */
 .lightbox-container {
-    width: 440px;
-    height: 400px;
+    width: auto;
+    height: auto;
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 40px);
     background: #fff;
     border-radius: 4px;
     position: relative;
@@ -812,17 +817,19 @@
 }
 
 .lightbox-image-wrapper {
-    flex: 1;
-    padding: 20px;
+    padding: 20px 20px 0 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
 }
 
 .lightbox-image-wrapper img {
-    max-width: 100%;
-    max-height: 100%;
+    display: block;
+    width: auto;
+    height: auto;
+    /* window minus outer margin (40px), frame padding (40px) and the arrows/counter row (~45px) */
+    max-width: calc(100vw - 80px);
+    max-height: calc(100vh - 125px);
     object-fit: contain;
 }
 
@@ -830,7 +837,7 @@
     display: flex;
     /* flex-direction: column; */
     align-items: flex-start;
-    padding: 5px 0 1em 20px;
+    padding: 10px 20px 12px 20px;
     gap: 10px;
 }
 
@@ -1287,9 +1294,18 @@
         font-size: 13px;
     }
 
-    .lightbox img {
-        max-width: 95%;
-        max-height: 85vh;
+    .lightbox-container {
+        max-width: calc(100vw - 20px);
+        max-height: calc(100vh - 20px);
+    }
+
+    .lightbox-image-wrapper {
+        padding: 10px 10px 0 10px;
+    }
+
+    .lightbox-image-wrapper img {
+        max-width: calc(100vw - 40px);
+        max-height: calc(100vh - 95px);
     }
 
     .lightbox-close {

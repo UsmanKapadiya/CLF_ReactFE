@@ -112,7 +112,7 @@ function Gallery() {
 
         setCurrentImageIndex(newIndex);
         setLightboxImage(yearPhotos[newIndex]);
-    }, [selectedYear, selectedCatalog, currentImageIndex]);
+    }, [galleryPhoto, selectedYear, selectedCatalog, currentImageIndex]);
 
     const handleKeyDown = useCallback((e) => {
         if (e.key === 'Escape') {
@@ -123,6 +123,13 @@ function Gallery() {
             navigateLightbox('prev');
         }
     }, [closeLightbox, navigateLightbox]);
+
+    // Keyboard: Esc closes, ← / → change photo while the lightbox is open
+    useEffect(() => {
+        if (!lightboxImage) return undefined;
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [lightboxImage, handleKeyDown]);
 
     const handleYearClick = useCallback((year) => {
         setSelectedYear(year);
@@ -381,7 +388,6 @@ function Gallery() {
                 <div
                     className="lightbox-overlay"
                     onClick={closeLightbox}
-                    onKeyDown={handleKeyDown}
                     role="dialog"
                     aria-modal="true"
                 >
