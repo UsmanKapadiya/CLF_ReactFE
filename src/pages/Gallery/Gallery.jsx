@@ -1,10 +1,12 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import './Gallery.css';
 import Title from '../../assets/title.png';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import OpenInFullIcon from '@mui/icons-material/OpenInFull';
+import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen';
 import { GALLERY_CATEGORIES } from '../../constants/galleryData';
 import MetaTitle from '../../components/MetaTags/MetaTags';
 import { getAllVideos, getPhotosList } from '../../services/ApiServices';
@@ -27,6 +29,11 @@ function Gallery() {
     const [showAllGalleries, setShowAllGalleries] = useState(false);
     const [lightboxImage, setLightboxImage] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    // Expand button: enlarges the fitted photo by EXPAND_FACTOR (never beyond its real size)
+    const [lightboxExpanded, setLightboxExpanded] = useState(false);
+    const [expandedSize, setExpandedSize] = useState(null);
+    const [canExpand, setCanExpand] = useState(false);
+    const lightboxImgRef = useRef(null);
     const [videoLightbox, setVideoLightbox] = useState(null);
     const [loading, setLoading] = useState(false);
     const [selectedYear, setSelectedYear] = useState();
@@ -123,6 +130,41 @@ function Gallery() {
             navigateLightbox('prev');
         }
     }, [closeLightbox, navigateLightbox]);
+
+    // A new photo always opens fitted to the window
+    useEffect(() => {
+        setLightboxExpanded(false);
+        setExpandedSize(null);
+        setCanExpand(false);
+    }, [lightboxImage]);
+
+    const expandLightbox = useCallback(() => {
+        const img = lightboxImgRef.current;
+        if (!img) return;
+        const EXPAND_FACTOR = 1.15; // 15% larger than the fitted size
+        const width = Math.min(img.naturalWidth, Math.round(img.clientWidth * EXPAND_FACTOR));
+        const height = Math.round(width * (img.naturalHeight / img.naturalWidth));
+        setExpandedSize({ width, height });
+        setLightboxExpanded(true);
+    }, []);
+
+    const fitLightbox = useCallback(() => {
+        setLightboxExpanded(false);
+        setExpandedSize(null);
+    }, []);
+
+    // Is the photo shown smaller than its real size? Then offer the expand button.
+    const checkCanExpand = useCallback(() => {
+        const img = lightboxImgRef.current;
+        if (!img || !img.naturalWidth) return;
+        setCanExpand(img.naturalWidth > img.clientWidth + 1 || img.naturalHeight > img.clientHeight + 1);
+    }, []);
+
+    useEffect(() => {
+        if (!lightboxImage || lightboxExpanded) return undefined;
+        window.addEventListener('resize', checkCanExpand);
+        return () => window.removeEventListener('resize', checkCanExpand);
+    }, [lightboxImage, lightboxExpanded, checkCanExpand]);
 
     // Keyboard: Esc closes, ← / → change photo while the lightbox is open
     useEffect(() => {
@@ -386,22 +428,59 @@ function Gallery() {
             {/* Lightbox */}
             {lightboxImage && (
                 <div
-                    className="lightbox-overlay"
+                    className={`lightbox-overlay ${lightboxExpanded ? 'is-expanded' : ''}`}
                     onClick={closeLightbox}
                     role="dialog"
                     aria-modal="true"
                 >
                     <div className="lightbox-container" onClick={(e) => e.stopPropagation()}>
+                        {(canExpand || lightboxExpanded) && (lightboxExpanded ? (
+                            <CloseFullscreenIcon
+                                className="lightbox-expand"
+                                onClick={fitLightbox}
+                                aria-label="Fit image to window"
+                                titleAccess="Fit to window"
+                            />
+                        ) : (
+                            <OpenInFullIcon
+                                className="lightbox-expand"
+                                onClick={expandLightbox}
+                                aria-label="Show image at full size"
+                                titleAccess="Expand the image"
+                            />
+                        ))}
                         <CancelIcon
                             className="lightbox-close"
                             onClick={closeLightbox}
                             aria-label="Close lightbox"
                         />
                         <div className="lightbox-image-wrapper">
-                            <img
-                                src={resolveMediaUrl(lightboxImage.src)}
-                                alt={lightboxImage.alt}
-                            />
+                            <div className="lightbox-image-holder">
+                                <img
+                                    ref={lightboxImgRef}
+                                    src={resolveMediaUrl(lightboxImage.src)}
+                                    alt={lightboxImage.alt}
+                                    style={lightboxExpanded && expandedSize ? { width: expandedSize.width, height: expandedSize.height } : undefined}
+                                    onLoad={checkCanExpand}
+                                />
+                                {/* Hover the left / right half of the photo to show the previous / next arrow */}
+                                <button
+                                    type="button"
+                                    className="lightbox-hover-nav lightbox-hover-prev"
+                                    onClick={() => navigateLightbox('prev')}
+                                    aria-label="Previous image"
+                                >
+                                    <ArrowCircleLeftIcon className="lightbox-hover-icon" />
+                                </button>
+                                <button
+                                    type="button"
+                                    className="lightbox-hover-nav lightbox-hover-next"
+                                    onClick={() => navigateLightbox('next')}
+                                    aria-label="Next image"
+                                >
+                                    <ArrowCircleRightIcon className="lightbox-hover-icon" />
+                                </button>
+                            </div>
                         </div>
                         <div className="lightbox-controls">
                             <ArrowCircleLeftIcon
